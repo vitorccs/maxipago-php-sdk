@@ -1,0 +1,41 @@
+{
+    "name": "vitorccs/maxipago-php-sdk",
+    "description": "SDK em PHP para API Maxipago",
+    "homepage": "https://github.com/vitorccs/maxipago-php-sdk",
+    "license": "GPL-3.0",
+    "keywords": [
+        "maxipago",
+        "sdk"
+    ],
+    "authors": [
+        {
+            "name": "Vitor Siqueira",
+            "email": "vitorccsiqueira@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "guzzlehttp/guzzle": "^7.4.2",
+        "ext-json": "*",
+        "ext-simplexml": "*",
+        "ext-libxml": "*",
+        "symfony/serializer": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vitorccs\\Maxipago\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vitorccs\\Maxipago\\Test\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.16",
+        "phpunit/phpunit": "^11.1"
+    },
+    "scripts": {
+        "test": "phpunit --testdox"
+    }
+}
