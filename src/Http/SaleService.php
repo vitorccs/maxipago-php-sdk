@@ -2,8 +2,8 @@
 
 namespace Vitorccs\Maxipago\Http;
 
-use Vitorccs\Maxipago\Entities\AbstractSale;
-use Vitorccs\Maxipago\Entities\PixSale;
+use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
+use Vitorccs\Maxipago\Entities\Sales\PixSale;
 use Vitorccs\Maxipago\Exceptions\MaxipagoException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoProcessorException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoRequestException;

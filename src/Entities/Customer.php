@@ -3,7 +3,7 @@
 namespace Vitorccs\Maxipago\Entities;
 
 use JsonSerializable;
-use Vitorccs\Maxipago\Entities\SaleSections\Address;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Address;
 
 class Customer implements JsonSerializable
 {

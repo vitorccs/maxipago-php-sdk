@@ -3,7 +3,7 @@
 namespace Vitorccs\Maxipago\Test\Entities\SaleSections;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Vitorccs\Maxipago\Entities\SaleSections\BillingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\BillingData;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 
 class BillingDataTest extends AbstractDataTest

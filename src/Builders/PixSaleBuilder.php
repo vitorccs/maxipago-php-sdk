@@ -2,9 +2,9 @@
 
 namespace Vitorccs\Maxipago\Builders;
 
-use Vitorccs\Maxipago\Entities\PixSale;
-use Vitorccs\Maxipago\Entities\SaleSections\Payment;
-use Vitorccs\Maxipago\Entities\SaleSections\PixPayType;
+use Vitorccs\Maxipago\Entities\PayTypes\PixPayType;
+use Vitorccs\Maxipago\Entities\Sales\PixSale;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 use Vitorccs\Maxipago\Enums\Processor;
 
 class PixSaleBuilder extends AbstractSaleBuilder

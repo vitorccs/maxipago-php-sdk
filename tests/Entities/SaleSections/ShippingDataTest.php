@@ -2,7 +2,7 @@
 
 namespace Vitorccs\Maxipago\Test\Entities\SaleSections;
 
-use Vitorccs\Maxipago\Entities\SaleSections\ShippingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 
 class ShippingDataTest extends AbstractDataTest
 {

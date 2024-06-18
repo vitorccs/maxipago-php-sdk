@@ -3,7 +3,7 @@
 namespace Vitorccs\Maxipago\Test\Builders;
 
 use Vitorccs\Maxipago\Builders\ShippingDataBuilder;
-use Vitorccs\Maxipago\Entities\SaleSections\ShippingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 
 class ShippingDataBuilderTest extends AbstractDataBuilderTester
 {

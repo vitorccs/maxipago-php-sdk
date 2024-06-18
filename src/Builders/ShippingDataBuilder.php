@@ -2,7 +2,7 @@
 
 namespace Vitorccs\Maxipago\Builders;
 
-use Vitorccs\Maxipago\Entities\SaleSections\ShippingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 
 class ShippingDataBuilder extends AbstractDataBuilder
 {

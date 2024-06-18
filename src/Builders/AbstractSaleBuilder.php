@@ -2,11 +2,11 @@
 
 namespace Vitorccs\Maxipago\Builders;
 
-use Vitorccs\Maxipago\Entities\AbstractSale;
-use Vitorccs\Maxipago\Entities\SaleSections\AbstractPayType;
-use Vitorccs\Maxipago\Entities\SaleSections\Address;
-use Vitorccs\Maxipago\Entities\SaleSections\BillingData;
-use Vitorccs\Maxipago\Entities\SaleSections\ShippingData;
+use Vitorccs\Maxipago\Entities\PayTypes\AbstractPayType;
+use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Address;
+use Vitorccs\Maxipago\Entities\Sales\Sections\BillingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 use Vitorccs\Maxipago\Enums\Answer;
 use Vitorccs\Maxipago\Enums\CustomerGender;
 use Vitorccs\Maxipago\Enums\CustomerType;

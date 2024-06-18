@@ -1,9 +1,9 @@
 <?php
 
-namespace Vitorccs\Maxipago\Entities;
+namespace Vitorccs\Maxipago\Entities\Sales;
 
-use Vitorccs\Maxipago\Entities\SaleSections\Payment;
-use Vitorccs\Maxipago\Entities\SaleSections\PixPayType;
+use Vitorccs\Maxipago\Entities\PayTypes\PixPayType;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 
 class PixSale extends AbstractSale
 {

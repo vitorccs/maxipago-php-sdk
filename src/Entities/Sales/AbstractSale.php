@@ -1,12 +1,13 @@
 <?php
 
-namespace Vitorccs\Maxipago\Entities;
+namespace Vitorccs\Maxipago\Entities\Sales;
 
 use JsonSerializable;
-use Vitorccs\Maxipago\Entities\SaleSections\AbstractPayType;
-use Vitorccs\Maxipago\Entities\SaleSections\BillingData;
-use Vitorccs\Maxipago\Entities\SaleSections\Payment;
-use Vitorccs\Maxipago\Entities\SaleSections\ShippingData;
+use Vitorccs\Maxipago\Entities\Exportable;
+use Vitorccs\Maxipago\Entities\PayTypes\AbstractPayType;
+use Vitorccs\Maxipago\Entities\Sales\Sections\BillingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
+use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 
 abstract class AbstractSale implements JsonSerializable
 {

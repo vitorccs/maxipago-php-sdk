@@ -4,8 +4,8 @@ namespace Vitorccs\Maxipago\Test\Entities\SaleSections;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Vitorccs\Maxipago\Entities\SaleSections\AbstractData;
-use Vitorccs\Maxipago\Entities\SaleSections\Address;
+use Vitorccs\Maxipago\Entities\Sales\Sections\AbstractData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Address;
 use Vitorccs\Maxipago\Enums\CustomerGender;
 use Vitorccs\Maxipago\Enums\CustomerType;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;

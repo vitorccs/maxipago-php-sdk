@@ -1,14 +1,14 @@
 <?php
 
-namespace Vitorccs\Maxipago\Test\Entities;
+namespace Vitorccs\Maxipago\Test\Entities\Sales;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Vitorccs\Maxipago\Entities\AbstractSale;
-use Vitorccs\Maxipago\Entities\SaleSections\AbstractPayType;
-use Vitorccs\Maxipago\Entities\SaleSections\BillingData;
-use Vitorccs\Maxipago\Entities\SaleSections\Payment;
-use Vitorccs\Maxipago\Entities\SaleSections\ShippingData;
+use Vitorccs\Maxipago\Entities\PayTypes\AbstractPayType;
+use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
+use Vitorccs\Maxipago\Entities\Sales\Sections\BillingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
+use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 use Vitorccs\Maxipago\Enums\Answer;
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;

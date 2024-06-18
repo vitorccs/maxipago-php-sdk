@@ -1,13 +1,13 @@
 <?php
 
-namespace Vitorccs\Maxipago\Test\Entities;
+namespace Vitorccs\Maxipago\Test\Entities\Sales;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Vitorccs\Maxipago\Entities\AbstractSale;
-use Vitorccs\Maxipago\Entities\PixSale;
-use Vitorccs\Maxipago\Entities\SaleSections\AbstractPayType;
-use Vitorccs\Maxipago\Entities\SaleSections\Payment;
-use Vitorccs\Maxipago\Entities\SaleSections\PixPayType;
+use Vitorccs\Maxipago\Entities\PayTypes\AbstractPayType;
+use Vitorccs\Maxipago\Entities\PayTypes\PixPayType;
+use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
+use Vitorccs\Maxipago\Entities\Sales\PixSale;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 
@@ -27,10 +27,10 @@ class PixSaleTest extends AbstractSaleTest
         $this->assertArrayHasKey($pixPayType->nodeName(), $export['transactionDetail']['payType']);
 
         $key = $pixPayType->nodeName();
-        $pixPayTypeNode = $export['transactionDetail']['payType'][$key];
+        $typeNode = $export['transactionDetail']['payType'][$key];
 
-        $this->assertSame($pixPayType->expirationTime, $pixPayTypeNode['expirationTime']);
-        $this->assertSame($pixPayType->paymentInfo, $pixPayTypeNode['paymentInfo']);
+        $this->assertSame($pixPayType->expirationTime, $typeNode['expirationTime']);
+        $this->assertSame($pixPayType->paymentInfo, $typeNode['paymentInfo']);
     }
 
     public static function pixSaleProvider(): array

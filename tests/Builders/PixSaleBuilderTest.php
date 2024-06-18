@@ -5,7 +5,7 @@ namespace Vitorccs\Maxipago\Test\Builders;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Vitorccs\Maxipago\Builders\PixSaleBuilder;
-use Vitorccs\Maxipago\Entities\PixSale;
+use Vitorccs\Maxipago\Entities\Sales\PixSale;
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 

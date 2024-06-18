@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitorccs\Maxipago\Entities\SaleSections;
+namespace Vitorccs\Maxipago\Entities\Sales\Sections;
 
 use JsonSerializable;
 use Vitorccs\Maxipago\Entities\Exportable;

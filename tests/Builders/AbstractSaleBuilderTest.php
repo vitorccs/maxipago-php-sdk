@@ -5,9 +5,9 @@ namespace Vitorccs\Maxipago\Test\Builders;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Vitorccs\Maxipago\Builders\AbstractSaleBuilder;
-use Vitorccs\Maxipago\Entities\AbstractSale;
-use Vitorccs\Maxipago\Entities\SaleSections\AbstractPayType;
-use Vitorccs\Maxipago\Entities\SaleSections\Payment;
+use Vitorccs\Maxipago\Entities\PayTypes\AbstractPayType;
+use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 

@@ -2,7 +2,7 @@
 
 namespace Vitorccs\Maxipago\Builders;
 
-use Vitorccs\Maxipago\Entities\SaleSections\BillingData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\BillingData;
 
 class BillingDataBuilder extends AbstractDataBuilder
 {

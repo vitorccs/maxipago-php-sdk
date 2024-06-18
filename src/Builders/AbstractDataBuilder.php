@@ -2,11 +2,12 @@
 
 namespace Vitorccs\Maxipago\Builders;
 
-use Vitorccs\Maxipago\Entities\SaleSections\AbstractData;
-use Vitorccs\Maxipago\Entities\SaleSections\Address;
+use Vitorccs\Maxipago\Entities\Sales\Sections\AbstractData;
+use Vitorccs\Maxipago\Entities\Sales\Sections\Address;
 use Vitorccs\Maxipago\Enums\CustomerGender;
 use Vitorccs\Maxipago\Enums\CustomerType;
 use Vitorccs\Maxipago\Helpers\CpfCnpjHelper;
+use Vitorccs\Maxipago\Helpers\DateHelper;
 
 abstract class AbstractDataBuilder
 {
@@ -30,7 +31,7 @@ abstract class AbstractDataBuilder
 
     public function setBirthdate(?\DateTime $date): self
     {
-        $this->data->birthdate = $date?->format('Y-m-d');
+        $this->data->birthdate = DateHelper::toString($date);
         return $this;
     }
 
