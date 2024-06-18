@@ -35,7 +35,7 @@ class AbstractDataTest extends TestCase
         $export = $obj->export();
 
         $this->assertSame($name, $export['name'] ?? null);
-        $this->assertSame($birthdate, $export['birthdate'] ?? null);
+        $this->assertSame($birthdate, $export['birthDate'] ?? null);
         $this->assertSame($customerType, $export['type'] ?? null);
         $this->assertSame($email, $export['email'] ?? null);
         $this->assertSame($gender, $export['gender'] ?? null);

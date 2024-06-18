@@ -48,6 +48,7 @@ abstract class AbstractData implements JsonSerializable
     {
         return [
             'address',
+            'birthdate',
             'cpf',
             'rg',
             'customerType'
@@ -75,6 +76,7 @@ abstract class AbstractData implements JsonSerializable
 
         $newFields = [
             'type' => $this->customerType,
+            'birthDate' => $this->birthdate,
             'documents' => [
                 'document' => $documents
             ]
