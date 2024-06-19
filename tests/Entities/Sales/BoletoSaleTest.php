@@ -62,9 +62,9 @@ class BoletoSaleTest extends AbstractSaleTest
                 new BoletoPayType(
                     $faker->randomNumber(),
                     $faker->date('d-m-Y'),
-                    new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat(), $faker->word()),
-                    new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat(), $faker->word()),
                     new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat()),
+                    new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat(), false),
+                    new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat(), true),
                     $faker->word(),
                     $faker->word(),
                     $faker->sentence(),

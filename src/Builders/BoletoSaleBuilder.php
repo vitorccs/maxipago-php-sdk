@@ -47,25 +47,30 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
         );
     }
 
+    // force variable cast since PHP does not implement generics
+    public function get(): BoletoSale
+    {
+        return $this->sale;
+    }
+
     public function setCharge(\Datetime|string $date,
                               BoletoChargeType $type,
                               float            $value): self
     {
         $date = DateHelper::toString($date);
 
-        $this->payType->charge = new BoletoFields($date, $type, $value);
+        $this->payType->charge = new BoletoFields($date, $type->value, $value);
 
         return $this;
     }
 
     public function setInterestRate(\Datetime|string $date,
-                                    float            $value,
-                                    ?string          $frequency = null): self
+                                    float            $value): self
     {
         $date = DateHelper::toString($date);
-        $type = BoletoChargeType::PERCENTUAL->value;
+        $type = BoletoChargeType::PERCENTUAL;
 
-        $this->payType->interestRate = new BoletoFields($date, $type, $value, $frequency);
+        $this->payType->interestRate = new BoletoFields($date, $type->value, $value, true);
         return $this;
     }
 
@@ -73,9 +78,9 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
                                 float            $value): self
     {
         $date = DateHelper::toString($date);
-        $type = BoletoChargeType::PERCENTUAL->value;
+        $type = BoletoChargeType::PERCENTUAL;
 
-        $this->payType->discount = new BoletoFields($date, $type, $value);
+        $this->payType->discount = new BoletoFields($date, $type->value, $value);
         return $this;
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitorccs\Maxipago\Test\Entities\SaleSections;
+namespace Vitorccs\Maxipago\Test\Entities\Sales\Sections;
 
 use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 

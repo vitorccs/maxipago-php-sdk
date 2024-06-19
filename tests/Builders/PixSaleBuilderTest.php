@@ -17,8 +17,8 @@ class PixSaleBuilderTest extends TestCase
                                                 string    $referenceNum,
                                                 int       $expirationTime)
     {
-        $pixSaleBuilder = new PixSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationTime);
-        $pixSale = $pixSaleBuilder->get();
+        $builder = new PixSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationTime);
+        $pixSale = $builder->get();
 
         $this->assertInstanceOf(PixSale::class, $pixSale);
         $this->assertSame($processor->value, $pixSale->processorID);
@@ -35,9 +35,9 @@ class PixSaleBuilderTest extends TestCase
                                          int       $expirationTime,
                                          ?string   $paymentInfo)
     {
-        $pixSaleBuilder = new PixSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationTime);
-        $pixSaleBuilder->setPixPaymentInfo($paymentInfo);
-        $pixSale = $pixSaleBuilder->get();
+        $builder = new PixSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationTime);
+        $builder->setPixPaymentInfo($paymentInfo);
+        $pixSale = $builder->get();
 
         $this->assertInstanceOf(PixSale::class, $pixSale);
         $this->assertSame($processor->value, $pixSale->processorID);

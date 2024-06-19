@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitorccs\Maxipago\Test\Entities\SaleSections;
+namespace Vitorccs\Maxipago\Test\Entities\Sales\Sections;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Vitorccs\Maxipago\Entities\Sales\Sections\BillingData;

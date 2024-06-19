@@ -39,14 +39,15 @@ class PixSaleBuilder extends AbstractSaleBuilder
         );
     }
 
+    // force variable cast since PHP does not implement generics
+    public function get(): PixSale
+    {
+        return $this->sale;
+    }
+
     public function setPixPaymentInfo(?string $info): self
     {
         $this->payType->paymentInfo = $info;
         return $this;
-    }
-
-    public function get(): PixSale
-    {
-        return $this->sale;
     }
 }

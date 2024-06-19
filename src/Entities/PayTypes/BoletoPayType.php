@@ -4,10 +4,12 @@ namespace Vitorccs\Maxipago\Entities\PayTypes;
 
 class BoletoPayType extends AbstractPayType
 {
+    const DEFAULT_FORMAT = 'pdf';
+    const DEFAULT_FIN_DOC_TYPE = 'DM';
+
     public ?BoletoFields $charge;
     public ?BoletoFields $interestRate;
     public ?BoletoFields $discount;
-
     public int $number;
     public string $expirationDate;
     public string $format;
@@ -19,8 +21,8 @@ class BoletoPayType extends AbstractPayType
                                 ?BoletoFields $charge = null,
                                 ?BoletoFields $interestRate = null,
                                 ?BoletoFields $discount = null,
-                                ?string       $format = 'pdf',
-                                ?string       $financialDocumentType = 'DM',
+                                ?string       $format = null,
+                                ?string       $financialDocumentType = null,
                                 ?string       $instructions = null)
     {
         $this->number = $number;
@@ -28,8 +30,8 @@ class BoletoPayType extends AbstractPayType
         $this->charge = $charge;
         $this->interestRate = $interestRate;
         $this->discount = $discount;
-        $this->format = $format;
-        $this->financialDocumentType = $financialDocumentType;
+        $this->format = $format ?: self::DEFAULT_FORMAT;
+        $this->financialDocumentType = $financialDocumentType ?: self::DEFAULT_FIN_DOC_TYPE;
         $this->instructions = $instructions;
     }
 

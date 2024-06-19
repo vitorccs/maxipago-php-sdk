@@ -5,8 +5,10 @@ namespace Vitorccs\Maxipago\Test\Http;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Vitorccs\Maxipago\Entities\PayTypes\BoletoPayType;
 use Vitorccs\Maxipago\Entities\PayTypes\PixPayType;
 use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
+use Vitorccs\Maxipago\Entities\Sales\BoletoSale;
 use Vitorccs\Maxipago\Entities\Sales\PixSale;
 use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 use Vitorccs\Maxipago\Exceptions\MaxipagoProcessorException;
@@ -53,6 +55,23 @@ class SaleServiceTest extends TestCase
 
         $serviceStub = $this->setTransactionStubResponse('postXml', $fmtPayload, $expResponse, $command);
         $actResponse = $serviceStub->createPixSale($payload);
+
+        $this->assertSame($expResponse, $actResponse);
+    }
+
+    #[DataProvider('createBoletoSaleProvider')]
+    public function test_create_boleto(array   $payload,
+                                       object  $expResponse,
+                                       ?string $command)
+    {
+        $fmtPayload = [
+            'order' => [
+                'sale' => $payload
+            ]
+        ];
+
+        $serviceStub = $this->setTransactionStubResponse('postXml', $fmtPayload, $expResponse, $command);
+        $actResponse = $serviceStub->createBoletoSale($payload);
 
         $this->assertSame($expResponse, $actResponse);
     }
@@ -138,7 +157,11 @@ class SaleServiceTest extends TestCase
         return [
             'pix' => [
                 'createPixSale',
-                new PixSale(new PixPayType(0), new Payment(0), '', 0)
+                self::pixSale()
+            ],
+            'boleto' => [
+                'createBoletoSale',
+                self::boletoSale(),
             ]
         ];
     }
@@ -159,31 +182,59 @@ class SaleServiceTest extends TestCase
         ];
     }
 
+    public static function createBoletoSaleProvider(): array
+    {
+        $faker = FakerHelper::get();
+
+        return [
+            'boleto_sample' => [
+                [],
+                (object)[
+                    'orderID' => $faker->uuid(),
+                    'referenceNum' => $faker->uuid()
+                ],
+                null
+            ]
+        ];
+    }
+
     public static function processorExceptionProvider(): array
     {
         $faker = FakerHelper::get();
 
-        $processorError = (object)[
+        $exception = new MaxipagoValidationException('description', 101, 202, 200, (object)[
             'orderID' => $faker->uuid(),
             'referenceNum' => $faker->uuid(),
             'transactionID' => $faker->uuid(),
             'processorCode' => $faker->numberBetween(1),
             'processorMessage' => $faker->sentence(),
-        ];
+        ]);
 
         return [
-            'PIX - Processor (success)' => [
-                new PixSale(new PixPayType(0), new Payment(0), '', 0),
-                new MaxipagoValidationException('description', 101, 202, 200, $processorError),
+            'PIX - Processor (check)' => [
+                self::pixSale(),
+                $exception,
                 MaxipagoProcessorException::class,
                 true,
             ],
-            'PIX - Processor (no success)' => [
-                new PixSale(new PixPayType(0), new Payment(0), '', 0),
-                new MaxipagoValidationException('description', 101, 202, 200, $processorError),
+            'PIX - Processor (no check)' => [
+                self::pixSale(),
+                $exception,
                 MaxipagoProcessorException::class,
                 false,
-            ]
+            ],
+            'Boleto - Processor (check)' => [
+                static::boletoSale(),
+                $exception,
+                MaxipagoProcessorException::class,
+                true,
+            ],
+            'Boleto - Processor (no check)' => [
+                static::boletoSale(),
+                $exception,
+                MaxipagoProcessorException::class,
+                false,
+            ],
         ];
     }
 
@@ -191,25 +242,36 @@ class SaleServiceTest extends TestCase
     {
         $faker = FakerHelper::get();
 
-
-        $validationError = (object)[
+        $exception = new MaxipagoValidationException('description', 101, 202, 200, (object)[
             'orderID' => null,
             'referenceNum' => null,
             'transactionID' => $faker->uuid(),
             'processorCode' => $faker->numberBetween(1),
             'processorMessage' => $faker->sentence(),
-        ];
+        ]);
 
         return [
-            'PIX - Validation (success)' => [
-                new PixSale(new PixPayType(0), new Payment(0), '', 0),
-                new MaxipagoValidationException('description', 101, 202, 200, $validationError),
+            'PIX - Validation (check)' => [
+                self::pixSale(),
+                $exception,
                 MaxipagoValidationException::class,
                 true,
             ],
-            'PIX - Validation (no success)' => [
-                new PixSale(new PixPayType(0), new Payment(0), '', 0),
-                new MaxipagoValidationException('description', 101, 202, 200, $validationError),
+            'PIX - Validation (no check)' => [
+                self::pixSale(),
+                $exception,
+                MaxipagoValidationException::class,
+                false,
+            ],
+            'Boleto - Validation (check)' => [
+                self::boletoSale(),
+                $exception,
+                MaxipagoValidationException::class,
+                true,
+            ],
+            'Boleto - Validation (no check)' => [
+                self::boletoSale(),
+                $exception,
                 MaxipagoValidationException::class,
                 false,
             ],
@@ -285,5 +347,18 @@ class SaleServiceTest extends TestCase
         );
 
         return $resourceStub;
+    }
+
+    public static function boletoSale(): BoletoSale
+    {
+        return new BoletoSale(new BoletoPayType(0, ''), new Payment(0), '', 0);
+    }
+
+    /**
+     * @return PixSale
+     */
+    private static function pixSale(): PixSale
+    {
+        return new PixSale(new PixPayType(0), new Payment(0), '', 0);
     }
 }

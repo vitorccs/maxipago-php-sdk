@@ -3,6 +3,7 @@
 namespace Vitorccs\Maxipago\Http;
 
 use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
+use Vitorccs\Maxipago\Entities\Sales\BoletoSale;
 use Vitorccs\Maxipago\Entities\Sales\PixSale;
 use Vitorccs\Maxipago\Exceptions\MaxipagoException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoProcessorException;
@@ -27,6 +28,10 @@ class SaleService extends Resource
             return $this->createPixSale($sale, $checkSuccess);
         }
 
+        if ($sale instanceof BoletoSale) {
+            return $this->createBoletoSale($sale, $checkSuccess);
+        }
+
         throw new MaxipagoException('Cannot detect instance of Sale');
     }
 
@@ -41,6 +46,31 @@ class SaleService extends Resource
         $sale = $pixSale instanceof PixSale
             ? $pixSale->export()
             : $pixSale;
+
+        $data = [
+            'order' => [
+                'sale' => $sale
+            ]
+        ];
+
+        try {
+            return $this->postXml($data);
+        } catch (MaxipagoValidationException $e) {
+            return $this->checkForProcessorException($e, $checkSuccess);
+        }
+    }
+
+    /**
+     * @throws MaxipagoValidationException
+     * @throws MaxipagoRequestException
+     * @throws MaxipagoProcessorException
+     */
+    public function createBoletoSale(BoletoSale|array $boletoSale,
+                                     bool             $checkSuccess = false): object
+    {
+        $sale = $boletoSale instanceof BoletoSale
+            ? $boletoSale->export()
+            : $boletoSale;
 
         $data = [
             'order' => [
