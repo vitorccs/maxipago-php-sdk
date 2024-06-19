@@ -5,6 +5,7 @@ namespace Vitorccs\Maxipago\Builders;
 use Vitorccs\Maxipago\Entities\Customer;
 use Vitorccs\Maxipago\Entities\Sales\Sections\Address;
 use Vitorccs\Maxipago\Enums\CustomerGender;
+use Vitorccs\Maxipago\Exceptions\MaxipagoException;
 use Vitorccs\Maxipago\Helpers\DateHelper;
 
 class CustomerBuilder
@@ -42,9 +43,12 @@ class CustomerBuilder
         return $this;
     }
 
+    /**
+     * @throws MaxipagoException
+     */
     public function setBirthDate(\Datetime|string|null $date): self
     {
-        $this->customer->dob = DateHelper::toString($date, 'd/m/Y');
+        $this->customer->dob = DateHelper::toLocalString($date);
         return $this;
     }
 

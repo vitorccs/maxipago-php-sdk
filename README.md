@@ -7,7 +7,7 @@ SDK em PHP para API Maxipago
 ## Descrição
 SDK em PHP para a [API Maxipago](https://www.maxipago.com/developers/apidocs/).
 
-**Importante:** no momento, foi implementado apenas a forma de pagamento PIX. Futuramente, serão implementados Boleto Bancário e Cartão de Crédito. 
+**Importante:** no momento, foi implementado apenas as forma de pagamentos PIX e Boleto. Futuramente, será implementado Cartão de Crédito.  
 
 ## Instalação
 Via Composer
@@ -127,16 +127,33 @@ $customer = CustomerBuilder::create('373.067.250-92',  'Joao', 'Silva')
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Builders\PixSaleBuilder;
 
-// Demonstrando a definição de todos os campos possíveis
-$pixExpiration = 82400;
-$pixSale = PixSaleBuilder::create(Processor::TEST, $chargeTotal, $referenceNumber, $pixExpiration)
-        ->setIpAddress('200.201.202.203')
-        ->setPixPaymentInfo('Mensagem de agradecimento')
+// Demonstrando os campos mais essenciais
+$pixExpiration = 82400; // em segundos
+$pixSale = PixSaleBuilder::create(Processor::TEST, 30.00, 'COD1001', $pixExpiration)
+        ->setPixPaymentInfo('Mensagem de agradecimento') // opcional
+        ->createBilling(
+            name: 'João Silva',
+            cpf: '373.067.250-92'
+        )
+        ->get();
+```
+
+### Criar Pedido Boleto
+```php
+use Vitorccs\Maxipago\Enums\Processor;
+use Vitorccs\Maxipago\Builders\BoletoSaleBuilder;
+
+// Demonstrando a possibilidade de vários campos opcionais
+$expirationDate = '2024-10-01';
+$pixSale = BoletoSaleBuilder::create(Processor::PIXITAU, 50.00, 'COD1002', 1001, $expirationDate)
+        ->setIpAddress('200.201.202.203') // opcional
         ->createBilling(
             name: 'João Silva',
             cpf: '373.067.250-92',
-            rg: '4.533.890-0',
-            companyName: 'Company Name'
+            rg: '4.533.890-0', // opcional
+            email: 'joao.silva@email.com', // opcional
+            companyName: 'Company Name' // opcional
+            birthdate: '1980-10-25' // opcional
         )
         ->setBillingAddressFields(
             'Rua Teste, 123',
@@ -146,11 +163,11 @@ $pixSale = PixSaleBuilder::create(Processor::TEST, $chargeTotal, $referenceNumbe
             'SP',
             '01234-567'
         )
-        ->createShipping(
+        ->createShipping( // opcional
             name: 'Maria Souza',
             cpf: '301.216.781-20'
         )
-        ->setShippingAddressFields(
+        ->setShippingAddressFields( // opcional
             'Rua Novo Teste, 456',
             null,
             'Bairro Novo Teste',

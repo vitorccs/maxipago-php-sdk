@@ -80,16 +80,16 @@ abstract class AbstractSaleBuilder
         return $this;
     }
 
-    public function createBilling(string          $name,
-                                  ?string         $cpf = null,
-                                  ?string         $rg = null,
-                                  ?string         $email = null,
-                                  ?string         $phone = null,
-                                  ?string         $companyName = null,
-                                  ?\DateTime      $birthdate = null,
-                                  ?Address        $address = null,
-                                  ?CustomerGender $gender = null,
-                                  ?CustomerType   $customerType = null): self
+    public function createBilling(string                $name,
+                                  ?string               $cpf = null,
+                                  ?string               $rg = null,
+                                  ?string               $email = null,
+                                  ?string               $phone = null,
+                                  ?string               $companyName = null,
+                                  \DateTime|string|null $birthdate = null,
+                                  ?Address              $address = null,
+                                  ?CustomerGender       $gender = null,
+                                  ?CustomerType         $customerType = null): self
     {
         $billing = BillingDataBuilder::create($name)
             ->setCpf($cpf)

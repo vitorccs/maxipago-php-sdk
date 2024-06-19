@@ -6,6 +6,7 @@ use Vitorccs\Maxipago\Entities\Sales\Sections\AbstractData;
 use Vitorccs\Maxipago\Entities\Sales\Sections\Address;
 use Vitorccs\Maxipago\Enums\CustomerGender;
 use Vitorccs\Maxipago\Enums\CustomerType;
+use Vitorccs\Maxipago\Exceptions\MaxipagoException;
 use Vitorccs\Maxipago\Helpers\CpfCnpjHelper;
 use Vitorccs\Maxipago\Helpers\DateHelper;
 
@@ -29,7 +30,10 @@ abstract class AbstractDataBuilder
         return $this;
     }
 
-    public function setBirthdate(?\DateTime $date): self
+    /**
+     * @throws MaxipagoException
+     */
+    public function setBirthdate(\DateTime|string|null $date): self
     {
         $this->data->birthdate = DateHelper::toString($date);
         return $this;
