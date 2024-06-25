@@ -3,7 +3,6 @@
 namespace Vitorccs\Maxipago\Http;
 
 use Vitorccs\Maxipago\Entities\Customer;
-use Vitorccs\Maxipago\Exceptions\MaxipagoProcessorException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoRequestException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoValidationException;
 use Vitorccs\Maxipago\Traits\ApiRequestRoot;
@@ -13,7 +12,6 @@ class CustomerService extends Resource
     use ApiRequestRoot;
 
     /**
-     * @throws MaxipagoProcessorException
      * @throws MaxipagoRequestException
      * @throws MaxipagoValidationException
      */

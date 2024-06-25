@@ -315,10 +315,10 @@ class SaleServiceTest extends TestCase
         ];
     }
 
-    public function setTransactionStubResponse(string  $methodName,
-                                               mixed   $payload,
-                                               object  $responseBody,
-                                               ?string $command = null): SaleService
+    private function setTransactionStubResponse(string  $methodName,
+                                                mixed   $payload,
+                                                object  $responseBody,
+                                                ?string $command = null): SaleService
     {
         $mockBuilder = $this->getMockBuilder(SaleService::class);
 
@@ -334,8 +334,18 @@ class SaleServiceTest extends TestCase
         return $resourceStub;
     }
 
-    public function setTransactionStubException(string     $methodName,
-                                                \Exception $exception): SaleService
+    private static function boletoSale(): BoletoSale
+    {
+        return new BoletoSale(new BoletoPayType(''), new Payment(0), '', 0);
+    }
+
+    private static function pixSale(): PixSale
+    {
+        return new PixSale(new PixPayType(0), new Payment(0), '', 0);
+    }
+
+    private function setTransactionStubException(string     $methodName,
+                                                 \Exception $exception): SaleService
     {
         $mockBuilder = $this->getMockBuilder(SaleService::class);
 
@@ -347,18 +357,5 @@ class SaleServiceTest extends TestCase
         );
 
         return $resourceStub;
-    }
-
-    public static function boletoSale(): BoletoSale
-    {
-        return new BoletoSale(new BoletoPayType(''), new Payment(0), '', 0);
-    }
-
-    /**
-     * @return PixSale
-     */
-    private static function pixSale(): PixSale
-    {
-        return new PixSale(new PixPayType(0), new Payment(0), '', 0);
     }
 }

@@ -13,9 +13,9 @@ use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 class CustomerBuilderTest extends TestCase
 {
     #[DataProvider('requiredFieldsProvider')]
-    public function teste_create_required_fields(string $customerIdExt,
-                                                 string $firstName,
-                                                 string $lastName)
+    public function test_create_required_fields(string $customerIdExt,
+                                                string $firstName,
+                                                string $lastName)
     {
         $builder = CustomerBuilder::create($customerIdExt, $firstName, $lastName);
         $customer = $builder->get();
@@ -33,14 +33,14 @@ class CustomerBuilderTest extends TestCase
     }
 
     #[DataProvider('optionalFieldsProvider')]
-    public function teste_create_optional_fields(string          $customerIdExt,
-                                                 string          $firstName,
-                                                 string          $lastName,
-                                                 ?string         $phone,
-                                                 ?string         $email,
-                                                 ?\DateTime      $dob,
-                                                 ?CustomerGender $gender,
-                                                 ?Address        $address)
+    public function test_create_optional_fields(string          $customerIdExt,
+                                                string          $firstName,
+                                                string          $lastName,
+                                                ?string         $phone,
+                                                ?string         $email,
+                                                ?\DateTime      $dob,
+                                                ?CustomerGender $gender,
+                                                ?Address        $address)
     {
         $builder = CustomerBuilder::create($customerIdExt, $firstName, $lastName);
         $builder->setPhone($phone)
