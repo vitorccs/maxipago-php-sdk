@@ -16,12 +16,12 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
     public function __construct(Processor        $processor,
                                 float            $chargeTotal,
                                 string           $referenceNum,
-                                int              $number,
-                                \Datetime|string $expirationDate)
+                                \Datetime|string $expirationDate,
+                                ?int             $number = null)
     {
         $expirationDate = DateHelper::toString($expirationDate);
 
-        $payType = new BoletoPayType($number, $expirationDate);
+        $payType = new BoletoPayType($expirationDate, $number);
 
         $sale = new BoletoSale(
             $payType,
@@ -36,15 +36,15 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
     public static function create(Processor        $processor,
                                   float            $chargeTotal,
                                   string           $referenceNum,
-                                  int              $number,
-                                  \Datetime|string $expirationDate): self
+                                  \Datetime|string $expirationDate,
+                                  ?int             $number = null): self
     {
         return new self(
             $processor,
             $chargeTotal,
             $referenceNum,
+            $expirationDate,
             $number,
-            $expirationDate
         );
     }
 

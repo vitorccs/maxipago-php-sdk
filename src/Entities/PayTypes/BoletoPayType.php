@@ -10,14 +10,14 @@ class BoletoPayType extends AbstractPayType
     public ?BoletoFields $charge;
     public ?BoletoFields $interestRate;
     public ?BoletoFields $discount;
-    public int $number;
+    public ?int $number;
     public string $expirationDate;
     public string $format;
     public string $financialDocumentType;
     public ?string $instructions;
 
-    public function __construct(int           $number,
-                                string        $expirationDate,
+    public function __construct(string        $expirationDate,
+                                ?int          $number = null,
                                 ?BoletoFields $charge = null,
                                 ?BoletoFields $interestRate = null,
                                 ?BoletoFields $discount = null,
@@ -25,8 +25,8 @@ class BoletoPayType extends AbstractPayType
                                 ?string       $financialDocumentType = null,
                                 ?string       $instructions = null)
     {
-        $this->number = $number;
         $this->expirationDate = $expirationDate;
+        $this->number = $number;
         $this->charge = $charge;
         $this->interestRate = $interestRate;
         $this->discount = $discount;

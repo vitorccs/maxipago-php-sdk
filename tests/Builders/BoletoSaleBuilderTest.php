@@ -18,20 +18,19 @@ class BoletoSaleBuilderTest extends TestCase
     public function test_create_required_fields(Processor        $processor,
                                                 float            $chargeTotal,
                                                 string           $referenceNum,
-                                                int              $number,
                                                 \Datetime|string $expirationDate)
     {
-        $builder = new BoletoSaleBuilder($processor, $chargeTotal, $referenceNum, $number, $expirationDate);
+        $builder = new BoletoSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationDate);
         $boletoSale = $builder->get();
 
         $this->assertInstanceOf(BoletoSale::class, $boletoSale);
         $this->assertSame($processor->value, $boletoSale->processorID);
         $this->assertSame($chargeTotal, $boletoSale->payment->chargeTotal);
         $this->assertSame($referenceNum, $boletoSale->referenceNum);
-        $this->assertSame($number, $boletoSale->getPayType()->number);
         is_string($expirationDate)
             ? $this->assertSame($expirationDate, $boletoSale->getPayType()->expirationDate)
             : $this->assertSame($expirationDate->format('Y-m-d'), $boletoSale->getPayType()->expirationDate);
+        $this->assertNull($boletoSale->getPayType()->number);
         $this->assertNull($boletoSale->getPayType()->instructions);
         $this->assertNull($boletoSale->getPayType()->charge);
         $this->assertNull($boletoSale->getPayType()->interestRate);
@@ -44,14 +43,14 @@ class BoletoSaleBuilderTest extends TestCase
     public function test_optional_fields(Processor        $processor,
                                          float            $chargeTotal,
                                          string           $referenceNum,
-                                         int              $number,
                                          \Datetime|string $expirationDate,
+                                         int              $number,
                                          string           $instructions,
                                          array            $charge,
                                          array            $discount,
                                          array            $interestRate)
     {
-        $builder = new BoletoSaleBuilder($processor, $chargeTotal, $referenceNum, $number, $expirationDate);
+        $builder = new BoletoSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationDate, $number);
         $builder->setInstructions($instructions);
         $builder->setCharge(...$charge);
         $builder->setDiscount(...$discount);
@@ -96,14 +95,12 @@ class BoletoSaleBuilderTest extends TestCase
                 FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
-                $faker->numberBetween(0, 99999),
                 $faker->date()
             ],
             'Datetime expirationDate' => [
                 FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
-                $faker->numberBetween(0, 99999),
                 $faker->dateTime()
             ],
         ];
@@ -118,8 +115,8 @@ class BoletoSaleBuilderTest extends TestCase
                 FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
-                $faker->numberBetween(0, 99999),
                 $faker->date(),
+                $faker->numberBetween(0, 99999),
                 $faker->sentence(),
                 [$faker->date(), FakerHelper::randomEnum(BoletoChargeType::class), $faker->randomFloat()],
                 [$faker->date(), $faker->randomFloat()],

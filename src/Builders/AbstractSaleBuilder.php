@@ -40,7 +40,7 @@ abstract class AbstractSaleBuilder
         return $this;
     }
 
-    public function setCustomerIdCheck(?string $customerIdExt): self
+    public function setCustomerIdExt(?string $customerIdExt): self
     {
         $this->sale->customerIdExt = $customerIdExt;
         return $this;

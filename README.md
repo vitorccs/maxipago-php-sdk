@@ -7,7 +7,7 @@ SDK em PHP para API Maxipago
 ## Descrição
 SDK em PHP para a [API Maxipago](https://www.maxipago.com/developers/apidocs/).
 
-**Importante:** no momento, foi implementado apenas as forma de pagamentos PIX e Boleto. Futuramente, será implementado Cartão de Crédito.  
+**Importante:** no momento, estão disponíveis as formas de pagamentos PIX e Boleto. Futuramente, será implementado Cartão de Crédito.
 
 ## Instalação
 Via Composer
@@ -142,18 +142,19 @@ $pixSale = PixSaleBuilder::create(Processor::TEST, 30.00, 'COD1001', $pixExpirat
 ```php
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Builders\BoletoSaleBuilder;
+use Vitorccs\Maxipago\Enums\CustomerType;
+use Vitorccs\Maxipago\Enums\BoletoChargeType;
 
-// Demonstrando a possibilidade de vários campos opcionais
+// Demonstrando os campos mais essenciais
 $expirationDate = '2024-10-01';
-$pixSale = BoletoSaleBuilder::create(Processor::PIXITAU, 50.00, 'COD1002', 1001, $expirationDate)
-        ->setIpAddress('200.201.202.203') // opcional
+$pixSale = BoletoSaleBuilder::create(Processor::PIXITAU, 50.00, 'COD1002', $expirationDate)
+        ->setCustomerIdExt('227.732.755-78')
         ->createBilling(
-            name: 'João Silva',
-            cpf: '373.067.250-92',
-            rg: '4.533.890-0', // opcional
+            name: 'João Silva Souza',
+            cpf: '227.732.755-78',
             email: 'joao.silva@email.com', // opcional
-            companyName: 'Company Name' // opcional
-            birthdate: '1980-10-25' // opcional
+            birthdate: '1980-10-25', // opcional
+            customerType: CustomerType::Individual // opcional
         )
         ->setBillingAddressFields(
             'Rua Teste, 123',
@@ -161,20 +162,11 @@ $pixSale = BoletoSaleBuilder::create(Processor::PIXITAU, 50.00, 'COD1002', 1001,
             'Bairro Teste',
             'São Paulo',
             'SP',
-            '01234-567'
+            '03456-000'
         )
-        ->createShipping( // opcional
-            name: 'Maria Souza',
-            cpf: '301.216.781-20'
-        )
-        ->setShippingAddressFields( // opcional
-            'Rua Novo Teste, 456',
-            null,
-            'Bairro Novo Teste',
-            'Recife',
-            'PE',
-            '76543-210'
-        )
+        ->setDiscount('2024-10-01', 5.00) // opcional
+        ->setCharge('2024-12-03', BoletoChargeType::AMOUNT, 2.50) // opcional
+        ->setInterestRate('2024-12-03', 1.10) // opcional
         ->get();
 ```
 

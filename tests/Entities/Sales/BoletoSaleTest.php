@@ -51,7 +51,6 @@ class BoletoSaleTest extends AbstractSaleTest
                 $faker->uuid(),
                 FakerHelper::randomEnumValue(Processor::class),
                 new BoletoPayType(
-                    $faker->randomNumber(),
                     $faker->date()
                 ),
             ],
@@ -60,8 +59,8 @@ class BoletoSaleTest extends AbstractSaleTest
                 $faker->uuid(),
                 FakerHelper::randomEnumValue(Processor::class),
                 new BoletoPayType(
-                    $faker->randomNumber(),
                     $faker->date('d-m-Y'),
+                    $faker->randomNumber(),
                     new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat()),
                     new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat(), false),
                     new BoletoFields($faker->date(), FakerHelper::randomEnumValue(BoletoChargeType::class), $faker->randomFloat(), true),
@@ -85,6 +84,6 @@ class BoletoSaleTest extends AbstractSaleTest
 
     protected function createPayTypeObject(): BoletoPayType
     {
-        return new BoletoPayType(1000, '31-01-2024');
+        return new BoletoPayType('31-01-2024');
     }
 }

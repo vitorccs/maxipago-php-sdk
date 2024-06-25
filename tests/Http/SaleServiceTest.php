@@ -351,7 +351,7 @@ class SaleServiceTest extends TestCase
 
     public static function boletoSale(): BoletoSale
     {
-        return new BoletoSale(new BoletoPayType(0, ''), new Payment(0), '', 0);
+        return new BoletoSale(new BoletoPayType(''), new Payment(0), '', 0);
     }
 
     /**
