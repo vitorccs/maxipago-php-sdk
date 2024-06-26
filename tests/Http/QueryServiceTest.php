@@ -5,6 +5,7 @@ namespace Vitorccs\Maxipago\Test\Http;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Vitorccs\Maxipago\Exceptions\MaxipagoNotFoundException;
 use Vitorccs\Maxipago\Http\QueryService;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 use Vitorccs\Maxipago\Test\Shared\ResourceStubTrait;
@@ -14,14 +15,22 @@ class QueryServiceTest extends TestCase
     use ResourceStubTrait;
 
     #[DataProvider('orderIdProvider')]
-    public function test_get_by_order_id(string  $orderId,
-                                         array   $payload,
-                                         object  $expResponse,
-                                         array   $expRecords,
-                                         ?string $command)
+    public function test_get_by_order_id(string $orderId,
+                                         array  $payload,
+                                         object $expResponse,
+                                         array  $expRecords,
+                                         string $command,
+                                         bool   $checkSuccess)
     {
-        $serviceStub = $this->getQueryServiceStub('reportsApi', $payload, $expResponse, $command);
-        $actResponse = $serviceStub->getByOrderId($orderId);
+        $this->expectNotFoundException($checkSuccess, $expRecords);
+
+        $serviceStub = $this->getQueryServiceStub(
+            'reportsApi',
+            [$payload, $command],
+            $expResponse,
+        );
+
+        $actResponse = $serviceStub->getByOrderId($orderId, $checkSuccess);
 
         $this->assertCount(count($expRecords), $actResponse);
 
@@ -31,14 +40,22 @@ class QueryServiceTest extends TestCase
     }
 
     #[DataProvider('orderIdProvider')]
-    public function test_get_last_by_order_id(string  $orderId,
-                                              array   $payload,
-                                              object  $expResponse,
-                                              array   $expRecords,
-                                              ?string $command)
+    public function test_get_last_by_order_id(string $orderId,
+                                              array  $payload,
+                                              object $expResponse,
+                                              array  $expRecords,
+                                              string $command,
+                                              bool   $checkSuccess)
     {
-        $serviceStub = $this->getQueryServiceStub('reportsApi', $payload, $expResponse, $command);
-        $actResponse = $serviceStub->getLastByOrderId($orderId);
+        $this->expectNotFoundException($checkSuccess, $expRecords);
+
+        $serviceStub = $this->getQueryServiceStub(
+            'reportsApi',
+            [$payload, $command],
+            $expResponse
+        );
+
+        $actResponse = $serviceStub->getLastByOrderId($orderId, $checkSuccess);
         $firstRecord = count($expRecords) ? $expRecords[0] : null;
 
         is_null($firstRecord)
@@ -47,14 +64,22 @@ class QueryServiceTest extends TestCase
     }
 
     #[DataProvider('referenceNumberProvider')]
-    public function test_get_by_reference_number(string  $referenceNum,
-                                                 array   $payload,
-                                                 object  $expResponse,
-                                                 array   $expRecords,
-                                                 ?string $command)
+    public function test_get_by_reference_number(string $referenceNum,
+                                                 array  $payload,
+                                                 object $expResponse,
+                                                 array  $expRecords,
+                                                 string $command,
+                                                 bool   $checkSuccess)
     {
-        $serviceStub = $this->getQueryServiceStub('reportsApi', $payload, $expResponse, $command);
-        $actResponse = $serviceStub->getByReferenceNumber($referenceNum);
+        $this->expectNotFoundException($checkSuccess, $expRecords);
+
+        $serviceStub = $this->getQueryServiceStub(
+            'reportsApi',
+            [$payload, $command],
+            $expResponse
+        );
+
+        $actResponse = $serviceStub->getByReferenceNumber($referenceNum, $checkSuccess);
 
         $this->assertCount(count($expRecords), $actResponse);
 
@@ -64,13 +89,22 @@ class QueryServiceTest extends TestCase
     }
 
     #[DataProvider('transactionIdProvider')]
-    public function test_get_by_transaction_id(string  $referenceNum,
-                                               array   $payload,
-                                               object  $expResponse,
-                                               ?string $command)
+    public function test_get_by_transaction_id(string $referenceNum,
+                                               array  $payload,
+                                               object $expResponse,
+                                               array  $expRecords,
+                                               string $command,
+                                               bool   $checkSuccess)
     {
-        $serviceStub = $this->getQueryServiceStub('reportsApi', $payload, $expResponse, $command);
-        $actResponse = $serviceStub->getByTransactionId($referenceNum);
+        $this->expectNotFoundException($checkSuccess, $expRecords);
+
+        $serviceStub = $this->getQueryServiceStub(
+            'reportsApi',
+            [$payload, $command],
+            $expResponse
+        );
+
+        $actResponse = $serviceStub->getByTransactionId($referenceNum, $checkSuccess);
         $expResponseRecord = $expResponse->result->records->record ?? null;
 
         $this->assertSame($expResponseRecord, $actResponse);
@@ -80,52 +114,52 @@ class QueryServiceTest extends TestCase
     {
         $faker = FakerHelper::get();
         $orderId = $faker->uuid();
+        $payload = [
+            'request' => [
+                'filterOptions' => [
+                    'orderId' => $orderId
+                ]
+            ]
+        ];
 
         return [
-            'no records' => [
+            'no records empty' => [
                 $orderId,
-                [
-                    'request' => [
-                        'filterOptions' => [
-                            'orderId' => $orderId
-                        ]
-                    ]
-                ],
+                $payload,
                 self::noOrdersResponseSample(),
                 [],
-                'transactionDetailReport'
+                'transactionDetailReport',
+                false
+            ],
+            'no records exception' => [
+                $orderId,
+                $payload,
+                self::noOrdersResponseSample(),
+                [],
+                'transactionDetailReport',
+                true
             ],
             'one record' => [
                 $orderId,
-                [
-                    'request' => [
-                        'filterOptions' => [
-                            'orderId' => $orderId
-                        ]
-                    ]
-                ],
+                $payload,
                 self::singleOrderResponseSample(),
                 [
                     static::fakeOrderGenerator('A')
                 ],
-                'transactionDetailReport'
+                'transactionDetailReport',
+                true
             ],
             'multiple records' => [
                 $orderId,
-                [
-                    'request' => [
-                        'filterOptions' => [
-                            'orderId' => $orderId
-                        ]
-                    ]
-                ],
+                $payload,
                 self::multipleOrderResponseSample(),
                 [
                     static::fakeOrderGenerator('A'),
                     static::fakeOrderGenerator('B'),
                     static::fakeOrderGenerator('C'),
                 ],
-                'transactionDetailReport'
+                'transactionDetailReport',
+                true
             ],
 
         ];
@@ -135,52 +169,52 @@ class QueryServiceTest extends TestCase
     {
         $faker = FakerHelper::get();
         $referenceNumber = $faker->uuid();
+        $payload = [
+            'request' => [
+                'filterOptions' => [
+                    'referenceNum' => $referenceNumber
+                ]
+            ]
+        ];
 
         return [
-            'no records' => [
+            'no records empty' => [
                 $referenceNumber,
-                [
-                    'request' => [
-                        'filterOptions' => [
-                            'referenceNum' => $referenceNumber
-                        ]
-                    ]
-                ],
+                $payload,
                 self::noOrdersResponseSample(),
                 [],
-                'transactionDetailReport'
+                'transactionDetailReport',
+                false
+            ],
+            'no records exception' => [
+                $referenceNumber,
+                $payload,
+                self::noOrdersResponseSample(),
+                [],
+                'transactionDetailReport',
+                true
             ],
             'one record' => [
                 $referenceNumber,
-                [
-                    'request' => [
-                        'filterOptions' => [
-                            'referenceNum' => $referenceNumber
-                        ]
-                    ]
-                ],
+                $payload,
                 self::singleOrderResponseSample(),
                 [
                     static::fakeOrderGenerator('A')
                 ],
-                'transactionDetailReport'
+                'transactionDetailReport',
+                true
             ],
             'multiple records' => [
                 $referenceNumber,
-                [
-                    'request' => [
-                        'filterOptions' => [
-                            'referenceNum' => $referenceNumber
-                        ]
-                    ]
-                ],
+                $payload,
                 self::multipleOrderResponseSample(),
                 [
                     static::fakeOrderGenerator('A'),
                     static::fakeOrderGenerator('B'),
                     static::fakeOrderGenerator('C'),
                 ],
-                'transactionDetailReport'
+                'transactionDetailReport',
+                true
             ]
         ];
     }
@@ -189,27 +223,47 @@ class QueryServiceTest extends TestCase
     {
         $faker = FakerHelper::get();
         $transactionId = $faker->uuid();
+        $payload = [
+            'request' => [
+                'filterOptions' => [
+                    'transactionId' => $transactionId
+                ]
+            ]
+        ];
 
         return [
-            'order_sample' => [
+            'no records empty' => [
                 $transactionId,
-                [
-                    'request' => [
-                        'filterOptions' => [
-                            'transactionId' => $transactionId
-                        ]
-                    ]
-                ],
+                $payload,
+                self::noOrdersResponseSample(),
+                [],
+                'transactionDetailReport',
+                false
+            ],
+            'no records exception' => [
+                $transactionId,
+                $payload,
+                self::noOrdersResponseSample(),
+                [],
+                'transactionDetailReport',
+                true
+            ],
+            'record' => [
+                $transactionId,
+                $payload,
                 self::singleOrderResponseSample(),
-                'transactionDetailReport'
+                [
+                    static::fakeOrderGenerator('A')
+                ],
+                'transactionDetailReport',
+                true
             ]
         ];
     }
 
-    private function getQueryServiceStub(string  $methodName,
-                                         array   $payload,
-                                         object  $responseBody,
-                                         ?string $command = null): QueryService
+    private function getQueryServiceStub(string $methodName,
+                                         array  $args,
+                                         object $responseBody): QueryService
     {
         $mockBuilder = $this->getMockBuilder(QueryService::class);
 
@@ -217,9 +271,8 @@ class QueryServiceTest extends TestCase
         $resourceStub = $this->setStubResponse(
             $mockBuilder,
             $methodName,
-            $payload,
-            $responseBody,
-            $command
+            $args,
+            $responseBody
         );
 
         return $resourceStub;
@@ -227,8 +280,6 @@ class QueryServiceTest extends TestCase
 
     private static function noOrdersResponseSample(): object
     {
-        $faker = FakerHelper::get();
-
         return (object)[
             'result' => (object)[
                 'records' => static::fakeOrderGenerator(),
@@ -238,8 +289,6 @@ class QueryServiceTest extends TestCase
 
     private static function singleOrderResponseSample(): object
     {
-        $faker = FakerHelper::get();
-
         return (object)[
             'result' => (object)[
                 'records' => (object)[
@@ -253,7 +302,7 @@ class QueryServiceTest extends TestCase
     {
         return (object)[
             'result' => (object)[
-                'records' => (object) [
+                'records' => (object)[
                     'record' => [
                         static::fakeOrderGenerator('A'),
                         static::fakeOrderGenerator('B'),
@@ -275,5 +324,16 @@ class QueryServiceTest extends TestCase
             'referenceNum' => "{$letter}2",
             'transactionID' => "{$letter}3"
         ];
+    }
+
+    private function expectNotFoundException(bool  $checkSuccess,
+                                             array $expRecords): void
+    {
+        $shouldThrowNotFoundException = $checkSuccess && empty($expRecords);
+
+        if ($shouldThrowNotFoundException) {
+            $this->expectException(MaxipagoNotFoundException::class);
+            $this->expectExceptionMessage('Transaction not found');
+        }
     }
 }

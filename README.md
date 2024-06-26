@@ -175,6 +175,7 @@ Esta biblioteca lança as seguintes exceções:
 
 * `MaxipagoValidationException` para erros diversos detectados pela API Maxipago, inclusive erros que impediram a Transação de ser criada (`errorCode` diferente de 0). 
 * `MaxipagoProcessorException` quando a Transação foi criada normalmente pela Maxipago, mas há um erro de "processor" (`responseCode` diferente de 0). Obs: apenas disponível nos serviços de criar transações.
+* `MaxipagoNotFoundException` ao tentar localizar uma Transação que não existe (ex: localizar por OrderId ou TransactionId).
 * `MaxipagoRequestException` para as demais falhas não tratadas pela API, incluindo erros de servidor (HTTP 4xx ou 5xx) e de conexão (ex: timeout).
 
 Exemplo de corpo da resposta onde será lançado uma exceção `MaxipagoValidationException`
@@ -243,7 +244,8 @@ try {
     print_r($response);
     
     // CONSULTANDO UMA TRANSAÇÃO
-    $response = $queryService->getLastByOrderId($response->orderID);
+    $checkSuccess = true;  // Habilitar MaxipagoNotFoundException
+    $response = $queryService->getLastByOrderId($response->orderID, $checkSuccess);
     print_r($response);
     
      // CANCELANDO UMA TRANSAÇÃO (EM ABERTO)

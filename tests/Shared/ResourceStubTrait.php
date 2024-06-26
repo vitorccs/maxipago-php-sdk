@@ -10,9 +10,8 @@ trait ResourceStubTrait
 {
     public function setStubResponse(MockBuilder $mockBuilder,
                                     string      $methodName,
-                                    array       $payload,
-                                    object      $responseBody,
-                                    ?string     $command = null): MockObject&Resource
+                                    array       $args,
+                                    object      $responseBody): MockObject&Resource
     {
         /* @var MockObject&Resource $stub */
 
@@ -23,7 +22,7 @@ trait ResourceStubTrait
 
         $stub->expects($this->once())
             ->method($methodName)
-            ->with($payload, $command)
+            ->with(...$args)
             ->willReturn($responseBody);
 
         return $stub;

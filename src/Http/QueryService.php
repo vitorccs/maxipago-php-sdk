@@ -2,6 +2,7 @@
 
 namespace Vitorccs\Maxipago\Http;
 
+use Vitorccs\Maxipago\Exceptions\MaxipagoNotFoundException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoRequestException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoValidationException;
 use Vitorccs\Maxipago\Traits\RapiRequestRoot;
@@ -11,10 +12,25 @@ class QueryService extends Resource
     use RapiRequestRoot;
 
     /**
+     * @throws MaxipagoValidationException
+     * @throws MaxipagoRequestException
+     * @throws MaxipagoNotFoundException
+     */
+    public function getLastByOrderId(string $orderId,
+                                     bool   $checkSuccess = false): ?object
+    {
+        $records = $this->getByOrderId($orderId, $checkSuccess);
+
+        return count($records) ? $records[0] : null;
+    }
+
+    /**
      * @throws MaxipagoRequestException
      * @throws MaxipagoValidationException
+     * @throws MaxipagoNotFoundException
      */
-    public function getByOrderId(string $orderId): array
+    public function getByOrderId(string $orderId,
+                                 bool   $checkSuccess = false): array
     {
         $payload = [
             'request' => [
@@ -25,26 +41,20 @@ class QueryService extends Resource
         ];
 
         $response = $this->reportsApi($payload, 'transactionDetailReport');
+        $transactions = $this->convertResponseToArray($response);
 
-        return $this->convertResponseToArray($response);
-    }
+        $this->checkForNotFoundException($transactions, $checkSuccess, $response);
 
-    /**
-     * @throws MaxipagoValidationException
-     * @throws MaxipagoRequestException
-     */
-    public function getLastByOrderId(string $orderId): ?object
-    {
-        $records = $this->getByOrderId($orderId);
-
-        return count($records) ? $records[0] : null;
+        return $transactions;
     }
 
     /**
      * @throws MaxipagoRequestException
      * @throws MaxipagoValidationException
+     * @throws MaxipagoNotFoundException
      */
-    public function getByReferenceNumber(string $referenceNum): array
+    public function getByReferenceNumber(string $referenceNum,
+                                         bool   $checkSuccess = false): array
     {
         $payload = [
             'request' => [
@@ -55,15 +65,20 @@ class QueryService extends Resource
         ];
 
         $response = $this->reportsApi($payload, 'transactionDetailReport');
+        $transactions = $this->convertResponseToArray($response);
 
-        return $this->convertResponseToArray($response);
+        $this->checkForNotFoundException($transactions, $checkSuccess, $response);
+
+        return $transactions;
     }
 
     /**
      * @throws MaxipagoRequestException
      * @throws MaxipagoValidationException
+     * @throws MaxipagoNotFoundException
      */
-    public function getByTransactionId(string $transactionId): ?object
+    public function getByTransactionId(string $transactionId,
+                                       bool   $checkSuccess = false): ?object
     {
         $payload = [
             'request' => [
@@ -74,8 +89,11 @@ class QueryService extends Resource
         ];
 
         $response = $this->reportsApi($payload, 'transactionDetailReport');
+        $transaction = $response->result->records->record ?? null;
 
-        return $response->result->records->record ?? null;
+        $this->checkForNotFoundException($transaction, $checkSuccess, $response);
+
+        return $transaction;
     }
 
     /**
@@ -96,5 +114,17 @@ class QueryService extends Resource
         $records = array_filter($records);
 
         return $records;
+    }
+
+    /**
+     * @throws MaxipagoNotFoundException
+     */
+    private function checkForNotFoundException(array|object|null $transactions,
+                                               bool              $checkSuccess,
+                                               object            $response): void
+    {
+        if (empty($transactions) && $checkSuccess) {
+            throw new MaxipagoNotFoundException($response);
+        }
     }
 }

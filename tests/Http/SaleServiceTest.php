@@ -53,7 +53,12 @@ class SaleServiceTest extends TestCase
             ]
         ];
 
-        $serviceStub = $this->setTransactionStubResponse('postXml', $fmtPayload, $expResponse, $command);
+        $serviceStub = $this->setTransactionStubResponse(
+            'postXml',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
         $actResponse = $serviceStub->createPixSale($payload);
 
         $this->assertSame($expResponse, $actResponse);
@@ -70,7 +75,12 @@ class SaleServiceTest extends TestCase
             ]
         ];
 
-        $serviceStub = $this->setTransactionStubResponse('postXml', $fmtPayload, $expResponse, $command);
+        $serviceStub = $this->setTransactionStubResponse(
+            'postXml',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
         $actResponse = $serviceStub->createBoletoSale($payload);
 
         $this->assertSame($expResponse, $actResponse);
@@ -121,7 +131,12 @@ class SaleServiceTest extends TestCase
             ]
         ];
 
-        $serviceStub = $this->setTransactionStubResponse('postXml', $fmtPayload, $expResponse, $command);
+        $serviceStub = $this->setTransactionStubResponse(
+            'postXml',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
         $actResponse = $serviceStub->cancelSale($transactionId);
 
         $this->assertSame($expResponse, $actResponse);
@@ -146,7 +161,12 @@ class SaleServiceTest extends TestCase
             ]
         ];
 
-        $serviceStub = $this->setTransactionStubResponse('postXml', $fmtPayload, $expResponse, $command);
+        $serviceStub = $this->setTransactionStubResponse(
+            'postXml',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
         $actResponse = $serviceStub->refundSale($orderId, $referenceNum, $chargeTotal);
 
         $this->assertSame($expResponse, $actResponse);
@@ -316,9 +336,8 @@ class SaleServiceTest extends TestCase
     }
 
     private function setTransactionStubResponse(string  $methodName,
-                                                mixed   $payload,
-                                                object  $responseBody,
-                                                ?string $command = null): SaleService
+                                                array   $args,
+                                                object  $responseBody): SaleService
     {
         $mockBuilder = $this->getMockBuilder(SaleService::class);
 
@@ -326,9 +345,8 @@ class SaleServiceTest extends TestCase
         $resourceStub = $this->setStubResponse(
             $mockBuilder,
             $methodName,
-            $payload,
-            $responseBody,
-            $command
+            $args,
+            $responseBody
         );
 
         return $resourceStub;

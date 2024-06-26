@@ -6,7 +6,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Vitorccs\Maxipago\Http\CustomerService;
-use Vitorccs\Maxipago\Http\SaleService;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 use Vitorccs\Maxipago\Test\Shared\ResourceStubTrait;
 
@@ -23,7 +22,12 @@ class CustomerTest extends TestCase
             'request' => $payload
         ];
 
-        $serviceStub = $this->setCustomerStubException('postApi', $fmtPayload, $expResponse, $command);
+        $serviceStub = $this->setCustomerStubException(
+            'postApi',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
         $actResponse = $serviceStub->create($payload);
 
         $this->assertSame($expResponse, $actResponse);
@@ -46,10 +50,9 @@ class CustomerTest extends TestCase
         ];
     }
 
-    private function setCustomerStubException(string  $methodName,
-                                              mixed   $payload,
-                                              object  $responseBody,
-                                              ?string $command = null): CustomerService
+    private function setCustomerStubException(string $methodName,
+                                              array  $args,
+                                              object $responseBody): CustomerService
     {
         $mockBuilder = $this->getMockBuilder(CustomerService::class);
 
@@ -57,9 +60,8 @@ class CustomerTest extends TestCase
         $resourceStub = $this->setStubResponse(
             $mockBuilder,
             $methodName,
-            $payload,
-            $responseBody,
-            $command
+            $args,
+            $responseBody
         );
 
         return $resourceStub;
