@@ -129,7 +129,7 @@ use Vitorccs\Maxipago\Builders\PixSaleBuilder;
 
 // Demonstrando os campos mais essenciais
 $pixExpiration = 82400; // em segundos
-$pixSale = PixSaleBuilder::create(Processor::TEST, 30.00, 'COD1001', $pixExpiration)
+$pixSale = PixSaleBuilder::create(30.00, 'COD1001', $pixExpiration)
         ->setPixPaymentInfo('Mensagem de agradecimento') // opcional
         ->createBilling(
             name: 'João Silva',
@@ -147,7 +147,8 @@ use Vitorccs\Maxipago\Enums\BoletoChargeType;
 
 // Demonstrando os campos mais essenciais
 $expirationDate = '2024-10-01';
-$pixSale = BoletoSaleBuilder::create(Processor::PIXITAU, 50.00, 'COD1002', $expirationDate)
+$pixSale = BoletoSaleBuilder::create(50.00, 'COD1002', $expirationDate)
+        ->setProcessorId(Processor::BOLETO_ITAU_V2) // opcional
         ->setCustomerIdExt('227.732.755-78')
         ->createBilling(
             name: 'João Silva Souza',
@@ -171,12 +172,17 @@ $pixSale = BoletoSaleBuilder::create(Processor::PIXITAU, 50.00, 'COD1002', $expi
 ```
 
 ## Tratamento de erros
-Esta biblioteca lança as seguintes exceções:
+Esta biblioteca lança as exceções abaixo:
 
+**Principais:**
 * `MaxipagoValidationException` para erros diversos detectados pela API Maxipago, inclusive erros que impediram a Transação de ser criada (`errorCode` diferente de 0). 
-* `MaxipagoProcessorException` quando a Transação foi criada normalmente pela Maxipago, mas há um erro de "processor" (`responseCode` diferente de 0). Obs: apenas disponível nos serviços de criar transações.
-* `MaxipagoNotFoundException` ao tentar localizar uma Transação que não existe (ex: localizar por OrderId ou TransactionId).
 * `MaxipagoRequestException` para as demais falhas não tratadas pela API, incluindo erros de servidor (HTTP 4xx ou 5xx) e de conexão (ex: timeout).
+
+**No serviço de Criar Transação:**
+* `MaxipagoProcessorException` quando a Transação conseguiu ser criada pela Maxipago, mas há um erro de "processor" (`responseCode` diferente de 0).
+
+**No serviço de Consultar Transação:**
+* `MaxipagoNotFoundException` ao tentar localizar uma Transação que não existe (ex: localizar por OrderId ou TransactionId).
 
 Exemplo de corpo da resposta onde será lançado uma exceção `MaxipagoValidationException`
 ```xml
@@ -230,7 +236,7 @@ try {
     $saleService = new SaleService();
 
     // CRIANDO TRANSAÇÃO
-    $pixSale = PixSaleBuilder::create(Processor::TEST, 200.00, 'COD_10001', 82400)
+    $pixSale = PixSaleBuilder::create(200.00, 'COD_10001', 82400)
         ->setIpAddress('200.201.202.203')
         ->createBilling(
             name: 'João Silva',

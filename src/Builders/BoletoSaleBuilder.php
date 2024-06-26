@@ -7,14 +7,12 @@ use Vitorccs\Maxipago\Entities\PayTypes\BoletoPayType;
 use Vitorccs\Maxipago\Entities\Sales\BoletoSale;
 use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 use Vitorccs\Maxipago\Enums\BoletoChargeType;
-use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Exceptions\MaxipagoException;
 use Vitorccs\Maxipago\Helpers\DateHelper;
 
 class BoletoSaleBuilder extends AbstractSaleBuilder
 {
-    public function __construct(Processor        $processor,
-                                float            $chargeTotal,
+    public function __construct(float            $chargeTotal,
                                 string           $referenceNum,
                                 \Datetime|string $expirationDate,
                                 ?int             $number = null)
@@ -26,21 +24,18 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
         $sale = new BoletoSale(
             $payType,
             new Payment($chargeTotal),
-            $referenceNum,
-            $processor->value
+            $referenceNum
         );
 
         parent::__construct($sale, $payType);
     }
 
-    public static function create(Processor        $processor,
-                                  float            $chargeTotal,
+    public static function create(float            $chargeTotal,
                                   string           $referenceNum,
                                   \Datetime|string $expirationDate,
                                   ?int             $number = null): self
     {
         return new self(
-            $processor,
             $chargeTotal,
             $referenceNum,
             $expirationDate,

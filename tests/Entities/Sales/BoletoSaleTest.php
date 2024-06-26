@@ -10,7 +10,6 @@ use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
 use Vitorccs\Maxipago\Entities\Sales\BoletoSale;
 use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 use Vitorccs\Maxipago\Enums\BoletoChargeType;
-use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 
 class BoletoSaleTest extends AbstractSaleTest
@@ -18,10 +17,9 @@ class BoletoSaleTest extends AbstractSaleTest
     #[DataProvider('boletoSaleProvider')]
     public function test_boleto_export(Payment       $payment,
                                        string        $referenceNum,
-                                       int           $processorID,
                                        BoletoPayType $boletoPayType)
     {
-        $obj = $this->createSaleObject($boletoPayType, $payment, $referenceNum, $processorID);
+        $obj = $this->createSaleObject($boletoPayType, $payment, $referenceNum);
         $export = $obj->export();
 
         $this->assertArrayHasKey('transactionDetail', $export);
@@ -49,7 +47,6 @@ class BoletoSaleTest extends AbstractSaleTest
             'required values' => [
                 new Payment($faker->randomFloat()),
                 $faker->uuid(),
-                FakerHelper::randomEnumValue(Processor::class),
                 new BoletoPayType(
                     $faker->date()
                 ),
@@ -57,7 +54,6 @@ class BoletoSaleTest extends AbstractSaleTest
             'optional values' => [
                 new Payment($faker->randomFloat()),
                 $faker->uuid(),
-                FakerHelper::randomEnumValue(Processor::class),
                 new BoletoPayType(
                     $faker->date('d-m-Y'),
                     $faker->randomNumber(),
@@ -74,12 +70,11 @@ class BoletoSaleTest extends AbstractSaleTest
 
     protected function createSaleObject(AbstractPayType $payType,
                                         Payment         $payment,
-                                        string          $referenceNum,
-                                        int             $processorID): AbstractSale
+                                        string          $referenceNum): AbstractSale
     {
         /** @var BoletoPayType $payType */
 
-        return new BoletoSale($payType, $payment, $referenceNum, $processorID);
+        return new BoletoSale($payType, $payment, $referenceNum);
     }
 
     protected function createPayTypeObject(): BoletoPayType

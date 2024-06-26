@@ -7,16 +7,14 @@ use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 
 class PixSale extends AbstractSale
 {
-    public function __construct(PixPayType  $pixPayType,
-                                Payment     $payment,
-                                string      $referenceNum,
-                                int         $processorID)
+    public function __construct(PixPayType $pixPayType,
+                                Payment    $payment,
+                                string     $referenceNum)
     {
         parent::__construct(
             $pixPayType,
             $payment,
-            $referenceNum,
-            $processorID
+            $referenceNum
         );
     }
 

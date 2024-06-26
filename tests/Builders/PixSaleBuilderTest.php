@@ -6,22 +6,19 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Vitorccs\Maxipago\Builders\PixSaleBuilder;
 use Vitorccs\Maxipago\Entities\Sales\PixSale;
-use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 
 class PixSaleBuilderTest extends TestCase
 {
     #[DataProvider('requiredFieldsProvider')]
-    public function test_create_required_fields(Processor $processor,
-                                                float     $chargeTotal,
-                                                string    $referenceNum,
-                                                int       $expirationTime)
+    public function test_create_required_fields(float  $chargeTotal,
+                                                string $referenceNum,
+                                                int    $expirationTime)
     {
-        $builder = new PixSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationTime);
+        $builder = new PixSaleBuilder($chargeTotal, $referenceNum, $expirationTime);
         $pixSale = $builder->get();
 
         $this->assertInstanceOf(PixSale::class, $pixSale);
-        $this->assertSame($processor->value, $pixSale->processorID);
         $this->assertSame($chargeTotal, $pixSale->payment->chargeTotal);
         $this->assertSame($referenceNum, $pixSale->referenceNum);
         $this->assertSame($expirationTime, $pixSale->getPayType()->expirationTime);
@@ -29,18 +26,16 @@ class PixSaleBuilderTest extends TestCase
     }
 
     #[DataProvider('optionalFieldsProvider')]
-    public function test_optional_fields(Processor $processor,
-                                         float     $chargeTotal,
-                                         string    $referenceNum,
-                                         int       $expirationTime,
-                                         ?string   $paymentInfo)
+    public function test_optional_fields(float   $chargeTotal,
+                                         string  $referenceNum,
+                                         int     $expirationTime,
+                                         ?string $paymentInfo)
     {
-        $builder = new PixSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationTime);
+        $builder = new PixSaleBuilder($chargeTotal, $referenceNum, $expirationTime);
         $builder->setPixPaymentInfo($paymentInfo);
         $pixSale = $builder->get();
 
         $this->assertInstanceOf(PixSale::class, $pixSale);
-        $this->assertSame($processor->value, $pixSale->processorID);
         $this->assertSame($chargeTotal, $pixSale->payment->chargeTotal);
         $this->assertSame($referenceNum, $pixSale->referenceNum);
         $this->assertSame($expirationTime, $pixSale->getPayType()->expirationTime);
@@ -53,7 +48,6 @@ class PixSaleBuilderTest extends TestCase
 
         return [
             'null values' => [
-                FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
                 $faker->numberBetween(0, 99999),
@@ -68,14 +62,12 @@ class PixSaleBuilderTest extends TestCase
 
         return [
             'null values' => [
-                FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
                 $faker->numberBetween(0, 99999),
                 null
             ],
             'non-null values' => [
-                FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
                 $faker->numberBetween(0, 99999),

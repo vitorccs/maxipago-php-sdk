@@ -18,7 +18,7 @@ class AbstractSaleTest extends TestCase
     #[DataProvider('saleProvider')]
     public function test_export(Payment       $payment,
                                 string        $referenceNum,
-                                int           $processorID,
+                                ?int          $processorId,
                                 ?string       $ipAddress,
                                 ?string       $fraudCheck,
                                 ?string       $customerIdExt,
@@ -26,7 +26,8 @@ class AbstractSaleTest extends TestCase
                                 ?ShippingData $shippingData)
     {
         $payType = $this->createPayTypeObject();
-        $obj = $this->createSaleObject($payType, $payment, $referenceNum, $processorID);
+        $obj = $this->createSaleObject($payType, $payment, $referenceNum);
+        $obj->processorId = $processorId;
         $obj->ipAddress = $ipAddress;
         $obj->fraudCheck = $fraudCheck;
         $obj->customerIdExt = $customerIdExt;
@@ -34,7 +35,7 @@ class AbstractSaleTest extends TestCase
         $obj->shipping = $shippingData;
         $export = $obj->export();
 
-        $this->assertSame($processorID, $export['processorID']);
+        $this->assertSame($processorId, $export['processorID']);
         $this->assertSame($ipAddress, $export['ipAddress']);
         $this->assertSame($fraudCheck, $export['fraudCheck']);
         $this->assertSame($customerIdExt, $export['customerIdExt']);
@@ -53,7 +54,7 @@ class AbstractSaleTest extends TestCase
             'required values' => [
                 new Payment($faker->randomFloat()),
                 $faker->uuid(),
-                FakerHelper::randomEnumValue(Processor::class),
+                null,
                 null,
                 null,
                 null,
@@ -75,10 +76,9 @@ class AbstractSaleTest extends TestCase
 
     protected function createSaleObject(AbstractPayType $payType,
                                         Payment         $payment,
-                                        string          $referenceNum,
-                                        int             $processorID): AbstractSale
+                                        string          $referenceNum): AbstractSale
     {
-        return new class($payType, $payment, $referenceNum, $processorID) extends AbstractSale {
+        return new class($payType, $payment, $referenceNum) extends AbstractSale {
 
         };
     }

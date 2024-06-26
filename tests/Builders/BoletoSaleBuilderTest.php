@@ -9,22 +9,19 @@ use Vitorccs\Maxipago\Entities\PayTypes\BoletoFields;
 use Vitorccs\Maxipago\Entities\PayTypes\BoletoPayType;
 use Vitorccs\Maxipago\Entities\Sales\BoletoSale;
 use Vitorccs\Maxipago\Enums\BoletoChargeType;
-use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 
 class BoletoSaleBuilderTest extends TestCase
 {
     #[DataProvider('requiredFieldsProvider')]
-    public function test_create_required_fields(Processor        $processor,
-                                                float            $chargeTotal,
+    public function test_create_required_fields(float            $chargeTotal,
                                                 string           $referenceNum,
                                                 \Datetime|string $expirationDate)
     {
-        $builder = new BoletoSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationDate);
+        $builder = new BoletoSaleBuilder($chargeTotal, $referenceNum, $expirationDate);
         $boletoSale = $builder->get();
 
         $this->assertInstanceOf(BoletoSale::class, $boletoSale);
-        $this->assertSame($processor->value, $boletoSale->processorID);
         $this->assertSame($chargeTotal, $boletoSale->payment->chargeTotal);
         $this->assertSame($referenceNum, $boletoSale->referenceNum);
         is_string($expirationDate)
@@ -40,8 +37,7 @@ class BoletoSaleBuilderTest extends TestCase
     }
 
     #[DataProvider('optionalFieldsProvider')]
-    public function test_optional_fields(Processor        $processor,
-                                         float            $chargeTotal,
+    public function test_optional_fields(float            $chargeTotal,
                                          string           $referenceNum,
                                          \Datetime|string $expirationDate,
                                          int              $number,
@@ -50,7 +46,7 @@ class BoletoSaleBuilderTest extends TestCase
                                          array            $discount,
                                          array            $interestRate)
     {
-        $builder = new BoletoSaleBuilder($processor, $chargeTotal, $referenceNum, $expirationDate, $number);
+        $builder = new BoletoSaleBuilder($chargeTotal, $referenceNum, $expirationDate, $number);
         $builder->setInstructions($instructions);
         $builder->setCharge(...$charge);
         $builder->setDiscount(...$discount);
@@ -58,7 +54,6 @@ class BoletoSaleBuilderTest extends TestCase
         $boletoSale = $builder->get();
 
         $this->assertInstanceOf(BoletoSale::class, $boletoSale);
-        $this->assertSame($processor->value, $boletoSale->processorID);
         $this->assertSame($chargeTotal, $boletoSale->payment->chargeTotal);
         $this->assertSame($referenceNum, $boletoSale->referenceNum);
         $this->assertSame($number, $boletoSale->getPayType()->number);
@@ -92,13 +87,11 @@ class BoletoSaleBuilderTest extends TestCase
 
         return [
             'string expirationDate' => [
-                FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
                 $faker->date()
             ],
             'Datetime expirationDate' => [
-                FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
                 $faker->dateTime()
@@ -112,7 +105,6 @@ class BoletoSaleBuilderTest extends TestCase
 
         return [
             'null values' => [
-                FakerHelper::randomEnum(Processor::class),
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
                 $faker->date(),

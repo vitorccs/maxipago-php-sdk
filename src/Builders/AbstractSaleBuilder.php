@@ -10,6 +10,7 @@ use Vitorccs\Maxipago\Entities\Sales\Sections\ShippingData;
 use Vitorccs\Maxipago\Enums\Answer;
 use Vitorccs\Maxipago\Enums\CustomerGender;
 use Vitorccs\Maxipago\Enums\CustomerType;
+use Vitorccs\Maxipago\Enums\Processor;
 
 abstract class AbstractSaleBuilder
 {
@@ -26,6 +27,14 @@ abstract class AbstractSaleBuilder
     public function get(): AbstractSale
     {
         return $this->sale;
+    }
+
+    public function setProcessorId(Processor|int|null $processorId): self
+    {
+        $this->sale->processorId = $processorId instanceof Processor
+            ? $processorId->value
+            : $processorId;
+        return $this;
     }
 
     public function setIpAddress(?string $ipAddress): self

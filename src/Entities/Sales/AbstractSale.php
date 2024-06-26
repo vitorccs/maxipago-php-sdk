@@ -13,25 +13,23 @@ abstract class AbstractSale implements JsonSerializable
 {
     use Exportable;
 
-    public int $processorID;
-    public string $referenceNum;
+    protected AbstractPayType $payType;
     public Payment $payment;
+    public string $referenceNum;
+    public ?int $processorId = null;
     public ?BillingData $billing = null;
     public ?string $ipAddress = null;
     public ?string $fraudCheck = null;
     public ?string $customerIdExt = null;
     public ?ShippingData $shipping = null;
-    protected AbstractPayType $payType;
 
     public function __construct(AbstractPayType $payType,
                                 Payment         $payment,
-                                string          $referenceNum,
-                                int             $processorID)
+                                string          $referenceNum)
     {
+        $this->payType = $payType;
         $this->payment = $payment;
         $this->referenceNum = $referenceNum;
-        $this->processorID = $processorID;
-        $this->payType = $payType;
     }
 
     public function getPayType(): AbstractPayType
@@ -42,6 +40,7 @@ abstract class AbstractSale implements JsonSerializable
     public function nonExportableFields(): array
     {
         return [
+            'processorId',
             'payType'
         ];
     }
@@ -49,6 +48,7 @@ abstract class AbstractSale implements JsonSerializable
     public function addExportableFields(): array
     {
         return [
+            'processorID' => $this->processorId,
             'transactionDetail' => [
                 'payType' => [
                     $this->payType->nodeName() => (array)$this->payType

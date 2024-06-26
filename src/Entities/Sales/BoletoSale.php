@@ -9,14 +9,12 @@ class BoletoSale extends AbstractSale
 {
     public function __construct(BoletoPayType $boletoPayType,
                                 Payment       $payment,
-                                string        $referenceNum,
-                                int           $processorID)
+                                string        $referenceNum)
     {
         parent::__construct(
             $boletoPayType,
             $payment,
-            $referenceNum,
-            $processorID
+            $referenceNum
         );
     }
 
