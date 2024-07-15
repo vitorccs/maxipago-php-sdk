@@ -43,9 +43,39 @@ abstract class AbstractDataBuilder
      * Note: some Processors such as "ITAUPIX" fails to create new
      * sale orders if value contains non-numeric chars
      */
+    public function setCnpj(?string $cnpj): self
+    {
+        $this->data->cnpj = CpfCnpjHelper::unmask($cnpj);
+        return $this;
+    }
+
+    /**
+     * Note: some Processors such as "ITAUPIX" fails to create new
+     * sale orders if value contains non-numeric chars
+     */
     public function setCpf(?string $cpf): self
     {
         $this->data->cpf = CpfCnpjHelper::unmask($cpf);
+        return $this;
+    }
+
+    public function setCpfCnpj(?string $cpfCnpj): self
+    {
+        if (is_null($cpfCnpj)) {
+            $this->data->cpf = $this->data->cnpj = null;
+            return $this;
+        }
+
+        if (CpfCnpjHelper::isCpf($cpfCnpj)) {
+            $this->setCpf($cpfCnpj);
+            return $this;
+        }
+
+        if (CpfCnpjHelper::isCnpj($cpfCnpj)) {
+            $this->setCnpj($cpfCnpj);
+            return $this;
+        }
+
         return $this;
     }
 

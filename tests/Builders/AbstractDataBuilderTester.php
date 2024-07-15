@@ -43,6 +43,7 @@ abstract class AbstractDataBuilderTester extends TestCase
                                                 ?CustomerGender $gender,
                                                 ?string         $phone,
                                                 ?string         $cpf,
+                                                ?string         $cnpj,
                                                 ?string         $rg)
     {
         $builder = $this->getBuilder($name);
@@ -52,6 +53,7 @@ abstract class AbstractDataBuilderTester extends TestCase
         $builder->setGender($gender);
         $builder->setPhone($phone);
         $builder->setCpf($cpf);
+        $builder->setCnpj($cnpj);
         $builder->setRg($rg);
         $data = $builder->get();
 
@@ -64,7 +66,29 @@ abstract class AbstractDataBuilderTester extends TestCase
         $this->assertSame($phone, $data->phone);
         $this->assertNull($data->address);
         $this->assertSame(CpfCnpjHelper::unmask($cpf), $data->cpf);
+        $this->assertSame(CpfCnpjHelper::unmask($cnpj), $data->cnpj);
         $this->assertSame($rg, $data->rg);
+    }
+
+    #[DataProvider('cpfCnpjProvider')]
+    public function test_set_cpf_cnpj_fields(string  $name,
+                                             ?string $cpf,
+                                             ?string $cnpj)
+    {
+        $cpfCnpj = $cpf ?: $cnpj;
+        $builder = $this->getBuilder($name);
+        $builder->setCpfCnpj($cpfCnpj);
+        $data = $builder->get();
+
+        $this->assertInstanceOf($this->instance(), $data);
+        
+        is_null($cpf)
+            ? $this->assertNull($data->cpf)
+            : $this->assertSame(CpfCnpjHelper::unmask($cpf), $data->cpf);
+
+        is_null($cnpj)
+            ? $this->assertNull($data->cnpj)
+            : $this->assertSame(CpfCnpjHelper::unmask($cnpj), $data->cnpj);
     }
 
     #[DataProvider('addressFieldsProvider')]
@@ -157,8 +181,9 @@ abstract class AbstractDataBuilderTester extends TestCase
                 null,
                 null,
                 null,
+                null,
             ],
-            'non-null values' => [
+            'non-null person' => [
                 $faker->word(),
                 $faker->dateTime(),
                 FakerHelper::randomEnum(CustomerType::class),
@@ -166,7 +191,31 @@ abstract class AbstractDataBuilderTester extends TestCase
                 FakerHelper::randomEnum(CustomerGender::class),
                 $faker->cellphoneNumber(),
                 $faker->cpf(),
+                $faker->cnpj(),
                 $faker->rg()
+            ],
+        ];
+    }
+
+    public static function cpfCnpjProvider(): array
+    {
+        $faker = FakerHelper::get();
+
+        return [
+            'cpf' => [
+                $faker->word(),
+                $faker->cpf(),
+                null
+            ],
+            'cnpj' => [
+                $faker->word(),
+                null,
+                $faker->cnpj()
+            ],
+            'none' => [
+                $faker->word(),
+                null,
+                null
             ],
         ];
     }

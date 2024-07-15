@@ -8,7 +8,7 @@ use Vitorccs\Maxipago\Helpers\CpfCnpjHelper;
 
 class CpfCnpjHelperTest extends TestCase
 {
-    #[DataProvider('cpfCnpjProvider')]
+    #[DataProvider('maskProvider')]
     public function test_unmask(?string $cpfCnpj,
                                 ?string $expected)
     {
@@ -17,7 +17,25 @@ class CpfCnpjHelperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function cpfCnpjProvider(): array
+    #[DataProvider('cpfProvider')]
+    public function test_is_cpf(?string $cpf,
+                                bool    $expected)
+    {
+        $actual = CpfCnpjHelper::isCpf($cpf);
+
+        $this->assertSame($actual, $expected);
+    }
+
+    #[DataProvider('cnpjProvider')]
+    public function test_is_cnpj(?string $cnpj,
+                                 bool    $expected)
+    {
+        $actual = CpfCnpjHelper::isCnpj($cnpj);
+
+        $this->assertSame($actual, $expected);
+    }
+
+    public static function maskProvider(): array
     {
         return [
             'masked cpf' => [
@@ -39,6 +57,58 @@ class CpfCnpjHelperTest extends TestCase
             'null value' => [
                 null,
                 null
+            ]
+        ];
+    }
+
+    public static function cpfProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                false
+            ],
+            'empty' => [
+                '',
+                false
+            ],
+            'numeric invalid length' => [
+                '3730672509',
+                false
+            ],
+            'masked cpf' => [
+                '373.067.250-92',
+                true
+            ],
+            'unmasked cpf' => [
+                '37306725092',
+                true
+            ]
+        ];
+    }
+
+    public static function cnpjProvider(): array
+    {
+        return [
+            'null' => [
+                null,
+                false
+            ],
+            'empty' => [
+                '',
+                false
+            ],
+            'numeric invalid length' => [
+                '3730672509',
+                false
+            ],
+            'masked cnpj' => [
+                '50.780.904/0001-55',
+                true
+            ],
+            'unmasked cnpj' => [
+                '50780904000155',
+                true
             ]
         ];
     }

@@ -18,6 +18,7 @@ abstract class AbstractData implements JsonSerializable
     public ?Address $address = null;
     public ?string $cpf = null;
     public ?string $rg = null;
+    public ?string $cnpj = null;
 
     public function __construct(string $name)
     {
@@ -49,6 +50,7 @@ abstract class AbstractData implements JsonSerializable
         return [
             'address',
             'birthdate',
+            'cnpj',
             'cpf',
             'rg',
             'customerType'
@@ -71,6 +73,13 @@ abstract class AbstractData implements JsonSerializable
             $documents[] = [
                 'documentType' => 'RG',
                 'documentValue' => $this->rg
+            ];
+        }
+
+        if (!empty($this->cnpj)) {
+            $documents[] = [
+                'documentType' => 'CNPJ',
+                'documentValue' => $this->cnpj
             ];
         }
 
