@@ -90,7 +90,7 @@ abstract class AbstractSaleBuilder
     }
 
     public function createBilling(string                $name,
-                                  ?string               $cpf = null,
+                                  ?string               $cpfCnpj = null,
                                   ?string               $rg = null,
                                   ?string               $email = null,
                                   ?string               $phone = null,
@@ -101,7 +101,7 @@ abstract class AbstractSaleBuilder
                                   ?CustomerType         $customerType = null): self
     {
         $billing = BillingDataBuilder::create($name)
-            ->setCpf($cpf)
+            ->setCpfCnpj($cpfCnpj)
             ->setPhone($phone)
             ->setEmail($email)
             ->setRg($rg)

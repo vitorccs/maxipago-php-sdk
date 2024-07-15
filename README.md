@@ -123,6 +123,7 @@ $customer = CustomerBuilder::create('373.067.250-92',  'Joao', 'Silva')
 ````
 
 ### Criar Pedido PIX
+
 ```php
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Builders\PixSaleBuilder;
@@ -133,12 +134,13 @@ $pixSale = PixSaleBuilder::create(30.00, 'COD1001', $pixExpiration)
         ->setPixPaymentInfo('Mensagem de agradecimento') // opcional
         ->createBilling(
             name: 'João Silva',
-            cpf: '373.067.250-92'
+            cpfCnpj: '373.067.250-92'
         )
         ->get();
 ```
 
 ### Criar Pedido Boleto
+
 ```php
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Builders\BoletoSaleBuilder;
@@ -152,7 +154,7 @@ $pixSale = BoletoSaleBuilder::create(50.00, 'COD1002', $expirationDate)
         ->setCustomerIdExt('227.732.755-78')
         ->createBilling(
             name: 'João Silva Souza',
-            cpf: '227.732.755-78',
+            cpfCnpj: '227.732.755-78',
             email: 'joao.silva@email.com', // opcional
             birthdate: '1980-10-25', // opcional
             customerType: CustomerType::Individual // opcional
@@ -240,7 +242,7 @@ try {
         ->setIpAddress('200.201.202.203')
         ->createBilling(
             name: 'João Silva',
-            cpf: '409.289.289-11',
+            cpfCnpj: '409.289.289-11',
             rg: '4.533.890-0',
             companyName: 'Company Name'
         )
