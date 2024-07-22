@@ -36,7 +36,7 @@ class CustomerTest extends TestCase
         $this->assertSame($email, $export['email']);
         $this->assertSame($dob, $export['dob']);
         $this->assertSame($gender, $export['sex']);
-        $this->assertSame($address?->postalcode, $export['zip'] ?? null);
+        $this->assertSame($address?->postalCode, $export['zip'] ?? null);
         $this->assertSame($address?->address2, $export['address2'] ?? null);
         $this->assertSame($address?->address2, $export['address2'] ?? null);
         $this->assertSame($address?->city, $export['city'] ?? null);

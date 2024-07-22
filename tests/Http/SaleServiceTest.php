@@ -6,9 +6,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Vitorccs\Maxipago\Entities\PayTypes\BoletoPayType;
+use Vitorccs\Maxipago\Entities\PayTypes\CreditCardPayType;
+use Vitorccs\Maxipago\Entities\PayTypes\OnFilePayType;
 use Vitorccs\Maxipago\Entities\PayTypes\PixPayType;
 use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
 use Vitorccs\Maxipago\Entities\Sales\BoletoSale;
+use Vitorccs\Maxipago\Entities\Sales\CreditCardSale;
 use Vitorccs\Maxipago\Entities\Sales\PixSale;
 use Vitorccs\Maxipago\Entities\Sales\Sections\Payment;
 use Vitorccs\Maxipago\Exceptions\MaxipagoProcessorException;
@@ -42,28 +45,6 @@ class SaleServiceTest extends TestCase
         $this->assertIsObject($actResponse);
     }
 
-    #[DataProvider('createPixSaleProvider')]
-    public function test_create_pix(array   $payload,
-                                    object  $expResponse,
-                                    ?string $command)
-    {
-        $fmtPayload = [
-            'order' => [
-                'sale' => $payload
-            ]
-        ];
-
-        $serviceStub = $this->setTransactionStubResponse(
-            'postXml',
-            [$fmtPayload, $command],
-            $expResponse
-        );
-
-        $actResponse = $serviceStub->createPixSale($payload);
-
-        $this->assertSame($expResponse, $actResponse);
-    }
-
     #[DataProvider('createBoletoSaleProvider')]
     public function test_create_boleto(array   $payload,
                                        object  $expResponse,
@@ -82,6 +63,50 @@ class SaleServiceTest extends TestCase
         );
 
         $actResponse = $serviceStub->createBoletoSale($payload);
+
+        $this->assertSame($expResponse, $actResponse);
+    }
+
+    #[DataProvider('createCreditCardSaleProvider')]
+    public function test_create_credit_card(array   $payload,
+                                            object  $expResponse,
+                                            ?string $command)
+    {
+        $fmtPayload = [
+            'order' => [
+                'sale' => $payload
+            ]
+        ];
+
+        $serviceStub = $this->setTransactionStubResponse(
+            'postXml',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
+        $actResponse = $serviceStub->createCreditCardSale($payload);
+
+        $this->assertSame($expResponse, $actResponse);
+    }
+
+    #[DataProvider('createPixSaleProvider')]
+    public function test_create_pix(array   $payload,
+                                    object  $expResponse,
+                                    ?string $command)
+    {
+        $fmtPayload = [
+            'order' => [
+                'sale' => $payload
+            ]
+        ];
+
+        $serviceStub = $this->setTransactionStubResponse(
+            'postXml',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
+        $actResponse = $serviceStub->createPixSale($payload);
 
         $this->assertSame($expResponse, $actResponse);
     }
@@ -182,6 +207,14 @@ class SaleServiceTest extends TestCase
             'boleto' => [
                 'createBoletoSale',
                 self::boletoSale(),
+            ],
+            'credit_card with token' => [
+                'createCreditCardSale',
+                self::creditCardTokenSale(),
+            ],
+            'credit_card without token' => [
+                'createCreditCardSale',
+                self::creditCardNoTokenSale(),
             ]
         ];
     }
@@ -208,6 +241,22 @@ class SaleServiceTest extends TestCase
 
         return [
             'boleto_sample' => [
+                [],
+                (object)[
+                    'orderID' => $faker->uuid(),
+                    'referenceNum' => $faker->uuid()
+                ],
+                null
+            ]
+        ];
+    }
+
+    public static function createCreditCardSaleProvider(): array
+    {
+        $faker = FakerHelper::get();
+
+        return [
+            'credit_card_sample' => [
                 [],
                 (object)[
                     'orderID' => $faker->uuid(),
@@ -335,9 +384,9 @@ class SaleServiceTest extends TestCase
         ];
     }
 
-    private function setTransactionStubResponse(string  $methodName,
-                                                array   $args,
-                                                object  $responseBody): SaleService
+    private function setTransactionStubResponse(string $methodName,
+                                                array  $args,
+                                                object $responseBody): SaleService
     {
         $mockBuilder = $this->getMockBuilder(SaleService::class);
 
@@ -355,6 +404,16 @@ class SaleServiceTest extends TestCase
     private static function boletoSale(): BoletoSale
     {
         return new BoletoSale(new BoletoPayType(''), new Payment(0), '', 0);
+    }
+
+    private static function creditCardTokenSale(): CreditCardSale
+    {
+        return new CreditCardSale(new OnFilePayType(1, ''), new Payment(0), '');
+    }
+
+    private static function creditCardNoTokenSale(): CreditCardSale
+    {
+        return new CreditCardSale(new CreditCardPayType('', '', '', ''), new Payment(0), '');
     }
 
     private static function pixSale(): PixSale

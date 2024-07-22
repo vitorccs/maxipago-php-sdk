@@ -4,6 +4,7 @@ namespace Vitorccs\Maxipago\Http;
 
 use Vitorccs\Maxipago\Entities\Sales\AbstractSale;
 use Vitorccs\Maxipago\Entities\Sales\BoletoSale;
+use Vitorccs\Maxipago\Entities\Sales\CreditCardSale;
 use Vitorccs\Maxipago\Entities\Sales\PixSale;
 use Vitorccs\Maxipago\Exceptions\MaxipagoException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoProcessorException;
@@ -24,12 +25,16 @@ class SaleService extends Resource
     public function createSale(AbstractSale $sale,
                                bool         $checkSuccess = false): object
     {
-        if ($sale instanceof PixSale) {
-            return $this->createPixSale($sale, $checkSuccess);
-        }
-
         if ($sale instanceof BoletoSale) {
             return $this->createBoletoSale($sale, $checkSuccess);
+        }
+
+        if ($sale instanceof CreditCardSale) {
+            return $this->createCreditCardSale($sale, $checkSuccess);
+        }
+
+        if ($sale instanceof PixSale) {
+            return $this->createPixSale($sale, $checkSuccess);
         }
 
         throw new MaxipagoException('Cannot detect instance of Sale');
@@ -40,12 +45,12 @@ class SaleService extends Resource
      * @throws MaxipagoRequestException
      * @throws MaxipagoProcessorException
      */
-    public function createPixSale(PixSale|array $pixSale,
-                                  bool          $checkSuccess = false): object
+    public function createBoletoSale(BoletoSale|array $boletoSale,
+                                     bool             $checkSuccess = false): object
     {
-        $sale = $pixSale instanceof PixSale
-            ? $pixSale->export()
-            : $pixSale;
+        $sale = $boletoSale instanceof BoletoSale
+            ? $boletoSale->export()
+            : $boletoSale;
 
         $data = [
             'order' => [
@@ -65,12 +70,37 @@ class SaleService extends Resource
      * @throws MaxipagoRequestException
      * @throws MaxipagoProcessorException
      */
-    public function createBoletoSale(BoletoSale|array $boletoSale,
-                                     bool             $checkSuccess = false): object
+    public function createCreditCardSale(CreditCardSale|array $creditCardSale,
+                                         bool                 $checkSuccess = false): object
     {
-        $sale = $boletoSale instanceof BoletoSale
-            ? $boletoSale->export()
-            : $boletoSale;
+        $sale = $creditCardSale instanceof CreditCardSale
+            ? $creditCardSale->export()
+            : $creditCardSale;
+
+        $data = [
+            'order' => [
+                'sale' => $sale
+            ]
+        ];
+
+        try {
+            return $this->postXml($data);
+        } catch (MaxipagoValidationException $e) {
+            return $this->checkForProcessorException($e, $checkSuccess);
+        }
+    }
+
+    /**
+     * @throws MaxipagoValidationException
+     * @throws MaxipagoRequestException
+     * @throws MaxipagoProcessorException
+     */
+    public function createPixSale(PixSale|array $pixSale,
+                                  bool          $checkSuccess = false): object
+    {
+        $sale = $pixSale instanceof PixSale
+            ? $pixSale->export()
+            : $pixSale;
 
         $data = [
             'order' => [

@@ -30,7 +30,7 @@ abstract class AbstractData implements JsonSerializable
                                      string  $district,
                                      string  $city,
                                      string  $state,
-                                     string  $postalcode,
+                                     string  $postalCode,
                                      ?string $country = null): self
     {
         $this->address = new Address(
@@ -39,7 +39,7 @@ abstract class AbstractData implements JsonSerializable
             $district,
             $city,
             $state,
-            $postalcode,
+            $postalCode,
             $country
         );
         return $this;
@@ -59,7 +59,6 @@ abstract class AbstractData implements JsonSerializable
 
     public function addExportableFields(): array
     {
-        $addressFields = (array)$this->address ?: [];
         $documents = [];
 
         if (!empty($this->cpf)) {
@@ -83,7 +82,7 @@ abstract class AbstractData implements JsonSerializable
             ];
         }
 
-        $newFields = [
+        $documentFields = [
             'type' => $this->customerType,
             'birthDate' => $this->birthdate,
             'documents' => [
@@ -91,6 +90,10 @@ abstract class AbstractData implements JsonSerializable
             ]
         ];
 
-        return array_merge($newFields, $addressFields);
+        $addressFields = $this->address
+            ? $this->address->export()
+            : [];
+
+        return array_merge($documentFields, $addressFields);
     }
 }

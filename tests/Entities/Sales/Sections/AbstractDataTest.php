@@ -46,7 +46,7 @@ class AbstractDataTest extends TestCase
         $this->assertSame($address->city ?? null, $export['city'] ?? null);
         $this->assertSame($address->state ?? null, $export['state'] ?? null);
         $this->assertSame($address->country ?? null, $export['country'] ?? null);
-        $this->assertSame($address->postalcode ?? null, $export['postalcode'] ?? null);
+        $this->assertSame($address->postalCode ?? null, $export['postalcode'] ?? null);
         $this->assertIsArray($export['documents'] ?? null);
         $this->assertIsArray($export['documents']['document'] ?? null);
 

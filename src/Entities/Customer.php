@@ -12,6 +12,7 @@ class Customer implements JsonSerializable
     public string $customerIdExt;
     public string $firstName;
     public string $lastName;
+    public ?int $customerId = null;
     public ?string $phone = null;
     public ?string $email = null;
     public ?string $dob = null;
@@ -30,28 +31,34 @@ class Customer implements JsonSerializable
 
     public function nonExportableFields(): array
     {
-        return ['address'];
+        return [
+            'address'
+        ];
     }
 
     public function addExportableFields(): array
     {
-        if (is_null($this->address)) return [];
+        $fields = [];
 
-        return [
-            'zip' => $this->address->postalcode,
-            'city' => $this->address->city,
-            'state' => $this->address->state,
-            'country' => $this->address->country,
-            'address1' => $this->address->address,
-            'address2' => $this->address->address2,
-        ];
+        if (!is_null($this->address)) {
+            $fields = array_merge($fields, [
+                'zip' => $this->address->postalCode,
+                'city' => $this->address->city,
+                'state' => $this->address->state,
+                'country' => $this->address->country,
+                'address1' => $this->address->address,
+                'address2' => $this->address->address2,
+            ]);
+        }
+
+        return $fields;
     }
 
     public function setAddressFields(string  $address,
                                      ?string $address2,
                                      string  $city,
                                      string  $state,
-                                     string  $postalcode,
+                                     string  $postalCode,
                                      ?string $country = null): self
     {
         $this->address = new Address(
@@ -60,9 +67,10 @@ class Customer implements JsonSerializable
             null,
             $city,
             $state,
-            $postalcode,
+            $postalCode,
             $country
         );
+
         return $this;
     }
 }

@@ -16,6 +16,7 @@ class CustomerTest extends TestCase
     #[DataProvider('createCustomerProvider')]
     public function test_create_customer(array   $payload,
                                          object  $expResponse,
+                                         int     $expCustomerId,
                                          ?string $command)
     {
         $fmtPayload = [
@@ -28,24 +29,64 @@ class CustomerTest extends TestCase
             $expResponse
         );
 
-        $actResponse = $serviceStub->create($payload);
+        $actCustomerId = $serviceStub->create($payload);
 
-        $this->assertSame($expResponse, $actResponse);
+        $this->assertSame($expCustomerId, $actCustomerId);
+    }
+
+    #[DataProvider('createCreditCardProvider')]
+    public function test_create_credit_card(array   $payload,
+                                            object  $expResponse,
+                                            string  $expToken,
+                                            ?string $command)
+    {
+        $fmtPayload = [
+            'request' => $payload
+        ];
+
+        $serviceStub = $this->setCustomerStubException(
+            'postApi',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
+        $actToken = $serviceStub->saveCard($payload);
+
+        $this->assertSame($expToken, $actToken);
     }
 
     public static function createCustomerProvider(): array
     {
-        $faker = FakerHelper::get();
+        $customerId = FakerHelper::get()->numberBetween(1);
 
         return [
             'customer_sample' => [
                 [],
                 (object)[
                     'result' => (object)[
-                        'customerId' => $faker->numberBetween(1),
+                        'customerId' => $customerId,
                     ]
                 ],
+                $customerId,
                 'add-consumer'
+            ]
+        ];
+    }
+
+    public static function createCreditCardProvider(): array
+    {
+        $token = FakerHelper::get()->word();
+
+        return [
+            'customer_sample' => [
+                [],
+                (object)[
+                    'result' => (object)[
+                        'token' => $token,
+                    ]
+                ],
+                $token,
+                'add-card-onfile'
             ]
         ];
     }

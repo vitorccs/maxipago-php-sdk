@@ -7,8 +7,6 @@ SDK em PHP para API Maxipago
 ## Descrição
 SDK em PHP para a [API Maxipago](https://www.maxipago.com/developers/apidocs/).
 
-**Importante:** no momento, estão disponíveis as formas de pagamentos PIX e Boleto. Futuramente, será implementado Cartão de Crédito.
-
 ## Instalação
 Via Composer
 ```bash
@@ -70,9 +68,17 @@ $response = $customerService->create($customer);
 ### Realizar Pedido
 
 ```php
-// Nota: utilize PixSaleBuilder (descrito mais abaixo na documentação)
+// Nota: utilize os Builders (descrito mais abaixo na documentação)
 // para gerar facilmente o objeto $sale
+
+// para Pix
 $response = $saleService->createPixSale($sale);
+
+// para Boleto
+$response = $saleService->createBoletoSale($sale);
+
+// para Cartão de Crédito
+$response = $saleService->createCreditCardSale($sale);
 ```
 
 ### Consultar Pedido
@@ -114,7 +120,7 @@ Para auxiliar a criar uma Transação, foram disponibilizados alguns construtore
 ```php
 use Vitorccs\Maxipago\Enums\CustomerGender;
 
-$customer = CustomerBuilder::create('373.067.250-92',  'Joao', 'Silva')
+$customer = CustomerBuilder::create('227.732.755-78',  'Joao', 'Silva')
         ->setPhone('11 91234-5678')
         ->setEmail('email@email.com')
         ->setGender(CustomerGender::M)
@@ -122,25 +128,7 @@ $customer = CustomerBuilder::create('373.067.250-92',  'Joao', 'Silva')
         ->get();
 ````
 
-### Criar Pedido PIX
-
-```php
-use Vitorccs\Maxipago\Enums\Processor;
-use Vitorccs\Maxipago\Builders\PixSaleBuilder;
-
-// Demonstrando os campos mais essenciais
-$pixExpiration = 82400; // em segundos
-$pixSale = PixSaleBuilder::create(30.00, 'COD1001', $pixExpiration)
-        ->setPixPaymentInfo('Mensagem de agradecimento') // opcional
-        ->createBilling(
-            name: 'João Silva',
-            cpfCnpj: '373.067.250-92'
-        )
-        ->get();
-```
-
 ### Criar Pedido Boleto
-
 ```php
 use Vitorccs\Maxipago\Enums\Processor;
 use Vitorccs\Maxipago\Builders\BoletoSaleBuilder;
@@ -153,7 +141,7 @@ $pixSale = BoletoSaleBuilder::create(50.00, 'COD1002', $expirationDate)
         ->setProcessorId(Processor::BOLETO_ITAU_V2) // opcional
         ->setCustomerIdExt('227.732.755-78')
         ->createBilling(
-            name: 'João Silva Souza',
+            name: 'João Silva',
             cpfCnpj: '227.732.755-78',
             email: 'joao.silva@email.com', // opcional
             birthdate: '1980-10-25', // opcional
@@ -170,6 +158,70 @@ $pixSale = BoletoSaleBuilder::create(50.00, 'COD1002', $expirationDate)
         ->setDiscount('2024-10-01', 5.00) // opcional
         ->setCharge('2024-12-03', BoletoChargeType::AMOUNT, 2.50) // opcional
         ->setInterestRate('2024-12-03', 1.10) // opcional
+        ->get();
+```
+
+### Criar Pedido Cartão de Crédito
+
+```php
+use Vitorccs\Maxipago\Builders\CustomerBuilder;
+use Vitorccs\Maxipago\Builders\CreditCardTokenSaleBuilder;
+use Vitorccs\Maxipago\Enums\Processor;
+ 
+// primeiro você deve cadastrar o cliente (guarde o ID do cliente)
+$customer = CustomerBuilder::create('409.289.289-11',  'João', 'Silva')
+    ->setPhone('11 91234-5678')
+    ->setEmail('email@email.com')
+    ->get();
+$customerId = $customerService->create($customer);
+
+// depois, você deve cadastrar o cartão de crédito dele (guarde o token)
+$cardNumber = '5555 5555 5555 5557';
+$expMonth = 5;
+$expYear = 2033;
+$customer = CreditCardBuilder::create($customerId, $cardNumber, $expMonth, $expYear)
+    ->setBillingEmail('email@email.com')
+    ->get();
+$cardToken = $customerService->saveCard($customer);
+
+// agora você cria a venda em cartão de crédito
+$creditCardSale = CreditCardTokenSaleBuilder::create($customerId, $cardToken, 'COD1003', 100.00)
+    ->setProcessorId(Processor::REDE)
+    ->setFraudCheck(Answer::N)
+    ->createBilling(
+        name: 'João Silva',
+        cpfCnpj: '227.732.755-78'
+    )
+    ->get();
+
+// você também pode fazer a venda sem tokenizar o cartão
+$cardNumber = '5555 5555 5555 5557';
+$expMonth = 5;
+$expYear = 2033;
+$cvvNumber = '444';
+$creditCardSale = CreditCardSaleBuilder::create($cardNumber, $expMonth, $expYear, $cvvNumber, 'COD1003', 100.00)
+    ->setProcessorId(Processor::REDE)
+    ->setFraudCheck(Answer::N)
+    ->createBilling(
+        name: 'João Silva',
+        cpfCnpj: '227.732.755-78'
+    )
+    ->get();
+```
+
+### Criar Pedido PIX
+```php
+use Vitorccs\Maxipago\Enums\Processor;
+use Vitorccs\Maxipago\Builders\PixSaleBuilder;
+
+// Demonstrando os campos mais essenciais
+$pixExpiration = 82400; // em segundos
+$pixSale = PixSaleBuilder::create(30.00, 'COD1001', $pixExpiration)
+        ->setPixPaymentInfo('Mensagem de agradecimento') // opcional
+        ->createBilling(
+            name: 'João Silva',
+            cpfCnpj: '373.067.250-92'
+        )
         ->get();
 ```
 

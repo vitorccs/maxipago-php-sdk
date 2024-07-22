@@ -114,7 +114,7 @@ abstract class AbstractDataBuilder
                                      string  $district,
                                      string  $city,
                                      string  $state,
-                                     string  $postalcode,
+                                     string  $postalCode,
                                      ?string $country = null): self
     {
         $this->data->setAddressFields(
@@ -123,7 +123,7 @@ abstract class AbstractDataBuilder
             $district,
             $city,
             $state,
-            $postalcode,
+            $postalCode,
             $country
         );
         return $this;

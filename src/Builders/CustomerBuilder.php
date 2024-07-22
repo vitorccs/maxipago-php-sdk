@@ -31,6 +31,12 @@ class CustomerBuilder
         return $this->customer;
     }
 
+    public function setCustomerId(int $customerId): self
+    {
+        $this->customer->customerId = $customerId;
+        return $this;
+    }
+
     public function setPhone(?string $phone): self
     {
         $this->customer->phone = $phone;
@@ -74,7 +80,7 @@ class CustomerBuilder
                                      ?string $address2,
                                      string  $city,
                                      string  $state,
-                                     string  $postalcode,
+                                     string  $postalCode,
                                      ?string $country = null): self
     {
         $this->customer->setAddressFields(
@@ -82,7 +88,7 @@ class CustomerBuilder
             $address2,
             $city,
             $state,
-            $postalcode,
+            $postalCode,
             $country
         );
         return $this;
