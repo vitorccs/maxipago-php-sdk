@@ -23,7 +23,7 @@ class CustomerTest extends TestCase
             'request' => $payload
         ];
 
-        $serviceStub = $this->setCustomerStubException(
+        $serviceStub = $this->setCustomerStub(
             'postApi',
             [$fmtPayload, $command],
             $expResponse
@@ -44,7 +44,7 @@ class CustomerTest extends TestCase
             'request' => $payload
         ];
 
-        $serviceStub = $this->setCustomerStubException(
+        $serviceStub = $this->setCustomerStub(
             'postApi',
             [$fmtPayload, $command],
             $expResponse
@@ -53,6 +53,28 @@ class CustomerTest extends TestCase
         $actToken = $serviceStub->saveCard($payload);
 
         $this->assertSame($expToken, $actToken);
+    }
+
+    #[DataProvider('deleteCreditCardProvider')]
+    public function test_delete_credit_card(int     $customerId,
+                                            string  $token,
+                                            object  $expResponse,
+                                            ?string $command)
+    {
+        $fmtPayload = [
+            'request' => [
+                'customerId' => $customerId,
+                'token' => $token
+            ]
+        ];
+
+        $serviceStub = $this->setCustomerStub(
+            'postApi',
+            [$fmtPayload, $command],
+            $expResponse
+        );
+
+        $serviceStub->deleteCard($customerId, $token);
     }
 
     public static function createCustomerProvider(): array
@@ -91,9 +113,26 @@ class CustomerTest extends TestCase
         ];
     }
 
-    private function setCustomerStubException(string $methodName,
-                                              array  $args,
-                                              object $responseBody): CustomerService
+    public static function deleteCreditCardProvider(): array
+    {
+        $customerId = FakerHelper::get()->numberBetween(1);
+        $token = FakerHelper::get()->word();
+
+        return [
+            'customer_sample' => [
+                $customerId,
+                $token,
+                (object)[
+                    'result' => null
+                ],
+                'delete-card-onfile'
+            ]
+        ];
+    }
+
+    private function setCustomerStub(string $methodName,
+                                     array  $args,
+                                     object $responseBody): CustomerService
     {
         $mockBuilder = $this->getMockBuilder(CustomerService::class);
 

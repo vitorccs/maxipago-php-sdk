@@ -45,4 +45,20 @@ class CustomerService extends Resource
 
         return $this->postApi($data, 'add-card-onfile')->result->token;
     }
+
+    /**
+     * @throws MaxipagoRequestException
+     * @throws MaxipagoValidationException
+     */
+    public function deleteCard(int $customerId, string $token): void
+    {
+        $data = [
+            'request' => [
+                'customerId' => $customerId,
+                'token' => $token
+            ]
+        ];
+
+        $this->postApi($data, 'delete-card-onfile');
+    }
 }

@@ -113,6 +113,17 @@ $chargeTotal = 100.00;
 $response = $saleService->refundSale($orderId, $referenceNumber, $chargeTotal);
 ```
 
+### Gerenciar Cartões de Crédito
+```php
+// Cadastra um cartão de crédito para um cliente
+// utilize preferencialmente CreditCardBuilder para gerar $creditCard
+$cardToken = $customerService->saveCard($creditCard);
+
+// você poderá remover o cartão chamando esse serviço 
+// Obs: em caso de qualquer erro, é lançado exceção
+$customerService->deleteCard($customerId, $cardToken);
+```
+
 ## Construtores (Builders)
 Para auxiliar a criar uma Transação, foram disponibilizados alguns construtores:
 
@@ -179,10 +190,10 @@ $customerId = $customerService->create($customer);
 $cardNumber = '5555 5555 5555 5557';
 $expMonth = 5;
 $expYear = 2033;
-$customer = CreditCardBuilder::create($customerId, $cardNumber, $expMonth, $expYear)
+$creditCard = CreditCardBuilder::create($customerId, $cardNumber, $expMonth, $expYear)
     ->setBillingEmail('email@email.com')
     ->get();
-$cardToken = $customerService->saveCard($customer);
+$cardToken = $customerService->saveCard($creditCard);
 
 // agora você cria a venda em cartão de crédito
 $creditCardSale = CreditCardTokenSaleBuilder::create($customerId, $cardToken, 'COD1003', 100.00)
