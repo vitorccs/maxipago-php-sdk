@@ -122,7 +122,7 @@ abstract class AbstractSaleBuilder
                                             string  $district,
                                             string  $city,
                                             string  $state,
-                                            string  $postalcode,
+                                            string  $postalCode,
                                             ?string $country = null): self
     {
         $this->sale->billing->setAddressFields(
@@ -131,14 +131,14 @@ abstract class AbstractSaleBuilder
             $district,
             $city,
             $state,
-            $postalcode,
+            $postalCode,
             $country
         );
         return $this;
     }
 
     public function createShipping(string          $name,
-                                   ?string         $cpf = null,
+                                   ?string         $cpfCnpj = null,
                                    ?string         $rg = null,
                                    ?string         $email = null,
                                    ?string         $phone = null,
@@ -148,7 +148,7 @@ abstract class AbstractSaleBuilder
                                    ?CustomerType   $customerType = null): self
     {
         $shipping = ShippingDataBuilder::create($name)
-            ->setCpf($cpf)
+            ->setCpfCnpj($cpfCnpj)
             ->setPhone($phone)
             ->setEmail($email)
             ->setRg($rg)
@@ -168,7 +168,7 @@ abstract class AbstractSaleBuilder
                                              string  $district,
                                              string  $city,
                                              string  $state,
-                                             string  $postalcode,
+                                             string  $postalCode,
                                              ?string $country = null): self
     {
         $this->sale->shipping->setAddressFields(
@@ -177,7 +177,7 @@ abstract class AbstractSaleBuilder
             $district,
             $city,
             $state,
-            $postalcode,
+            $postalCode,
             $country
         );
         return $this;

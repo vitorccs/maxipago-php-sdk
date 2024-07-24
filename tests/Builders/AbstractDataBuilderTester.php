@@ -81,7 +81,7 @@ abstract class AbstractDataBuilderTester extends TestCase
         $data = $builder->get();
 
         $this->assertInstanceOf($this->instance(), $data);
-        
+
         is_null($cpf)
             ? $this->assertNull($data->cpf)
             : $this->assertSame(CpfCnpjHelper::unmask($cpf), $data->cpf);
@@ -121,7 +121,7 @@ abstract class AbstractDataBuilderTester extends TestCase
         $this->assertSame($address->district, $addressData->district);
         $this->assertSame($address->city, $addressData->city);
         $this->assertSame($address->state, $addressData->state);
-        $this->assertSame($address->postalcode, $addressData->postalcode);
+        $this->assertSame($address->postalCode, $addressData->postalCode);
         $this->assertSame($address->country ?: Address::DEFAULT_COUNTRY, $addressData?->country);
 
         $this->assertInstanceOf($this->instance(), $data);
@@ -152,7 +152,7 @@ abstract class AbstractDataBuilderTester extends TestCase
         $this->assertSame($district, $billingData->address?->district);
         $this->assertSame($city, $billingData->address?->city);
         $this->assertSame($state, $billingData->address?->state);
-        $this->assertSame($postalcode, $billingData->address?->postalcode);
+        $this->assertSame($postalcode, $billingData->address?->postalCode);
         $this->assertSame($country ?: Address::DEFAULT_COUNTRY, $billingData->address?->country);
     }
 
