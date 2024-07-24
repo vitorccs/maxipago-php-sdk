@@ -9,7 +9,7 @@ use Vitorccs\Maxipago\Http\CustomerService;
 use Vitorccs\Maxipago\Test\Shared\FakerHelper;
 use Vitorccs\Maxipago\Test\Shared\ResourceStubTrait;
 
-class CustomerTest extends TestCase
+class CustomerServiceTest extends TestCase
 {
     use ResourceStubTrait;
 
