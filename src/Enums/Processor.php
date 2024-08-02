@@ -4,7 +4,8 @@ namespace Vitorccs\Maxipago\Enums;
 
 enum Processor: int
 {
-    case TEST = 1;
+    // for sandbox
+    case SIMULATOR = 1;
 
     // Credit Card
     case REDE = 2;
@@ -15,7 +16,7 @@ enum Processor: int
     case CHASEPAYMENTECH = 8;
     case STONE = 9;
 
-    // Pix
+    // PIX
     case PIXITAU = 200;
 
     // Boleto
