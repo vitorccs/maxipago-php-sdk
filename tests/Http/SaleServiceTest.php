@@ -311,40 +311,85 @@ class SaleServiceTest extends TestCase
     {
         $faker = FakerHelper::get();
 
-        $exception = new MaxipagoValidationException('description', 101, 202, 200, (object)[
-            'orderID' => null,
-            'referenceNum' => null,
-            'transactionID' => $faker->uuid(),
-            'processorCode' => $faker->numberBetween(1),
-            'processorMessage' => $faker->sentence(),
-        ]);
+        $provider = [];
 
-        return [
-            'PIX - Validation (check)' => [
-                self::pixSale(),
-                $exception,
-                MaxipagoValidationException::class,
-                true,
+        $payloads = [
+            'withOrderID' => [
+                'orderID' => $faker->uuid(),
+                'referenceNum' => null,
+                'transactionID' => null,
+                'processorCode' => $faker->numberBetween(1),
+                'processorMessage' => $faker->sentence(),
             ],
-            'PIX - Validation (no check)' => [
-                self::pixSale(),
-                $exception,
-                MaxipagoValidationException::class,
-                false,
+            'withReferenceNum' => [
+                'orderID' => null,
+                'referenceNum' => $faker->uuid(),
+                'transactionID' => null,
+                'processorCode' => $faker->numberBetween(1),
+                'processorMessage' => $faker->sentence(),
             ],
-            'Boleto - Validation (check)' => [
-                self::boletoSale(),
-                $exception,
-                MaxipagoValidationException::class,
-                true,
+            'withTransaction' => [
+                'orderID' => null,
+                'referenceNum' => null,
+                'transactionID' => $faker->uuid(),
+                'processorCode' => $faker->numberBetween(1),
+                'processorMessage' => $faker->sentence(),
             ],
-            'Boleto - Validation (no check)' => [
-                self::boletoSale(),
-                $exception,
-                MaxipagoValidationException::class,
-                false,
+            'allNull' => [
+                'orderID' => null,
+                'referenceNum' => null,
+                'transactionID' => null,
+                'processorCode' => $faker->numberBetween(1),
+                'processorMessage' => $faker->sentence(),
             ],
+            'allEmpty' => [
+                'orderID' => '',
+                'referenceNum' => '',
+                'transactionID' => '',
+                'processorCode' => $faker->numberBetween(1),
+                'processorMessage' => $faker->sentence(),
+            ]
         ];
+
+        $checks = [
+            'true' => true,
+            'false' => false
+        ];
+
+        foreach ($payloads as $pKey => $pValue) {
+            $exception = new MaxipagoValidationException('description', 101, 202, 200, (object)$pValue);
+
+            foreach ($checks as $cKey => $cValue) {
+                $key = sprintf("Payload (%s) - check (%s)", $pKey, $cKey);
+
+                $provider["PIX $key"] = [
+                    self::pixSale(),
+                    $exception,
+                    MaxipagoValidationException::class,
+                    $cValue,
+                ];
+                $provider["Boleto $key"] = [
+                    self::boletoSale(),
+                    $exception,
+                    MaxipagoValidationException::class,
+                    $cValue,
+                ];
+                $provider["CreditCard $key"] = [
+                    self::creditCardNoTokenSale(),
+                    $exception,
+                    MaxipagoValidationException::class,
+                    $cValue,
+                ];
+                $provider["CreditCard Token $key"] = [
+                    self::creditCardTokenSale(),
+                    $exception,
+                    MaxipagoValidationException::class,
+                    $cValue,
+                ];
+            }
+        }
+
+        return $provider;
     }
 
     public static function cancelSaleProvider(): array

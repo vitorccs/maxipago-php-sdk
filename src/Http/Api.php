@@ -166,12 +166,15 @@ class Api
 
         if (!$errorFound) return;
 
-        $errorMessage = $body->responseMessage
-            ?? $body->errorMessage
-            ?? null;
+        $responseMessage = $body->responseMessage ?? null;
+        $errorMessage = $body->errorMessage ?? null;
+
+        $message = !empty($responseMessage) && !empty($errorMessage)
+            ? sprintf("%s (%s)", $responseMessage, $errorMessage)
+            : ($responseMessage ?: $errorMessage);
 
         throw new MaxipagoValidationException(
-            $errorMessage,
+            $message,
             null,
             $responseCode,
             $response->getStatusCode(),
