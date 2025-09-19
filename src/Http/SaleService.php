@@ -180,9 +180,9 @@ class SaleService extends Resource
     {
         $body = $e->getResponseBody();
 
-        $isProcessorException = !is_null($body->orderID ?? null)
-            && !is_null($body->referenceNum ?? null)
-            && !is_null($body->transactionID ?? null);
+        $isProcessorException = !empty($body->orderID ?? null)
+            && !empty($body->referenceNum ?? null)
+            && !empty($body->transactionID ?? null);
 
         if (!$isProcessorException) {
             throw $e;

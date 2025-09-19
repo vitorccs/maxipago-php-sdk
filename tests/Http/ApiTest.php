@@ -53,11 +53,12 @@ class ApiTest extends TestCase
     }
 
     #[DataProvider('validationExceptionProvider')]
-    public function test_validation_exception(Response $response)
+    public function test_validation_exception(Response $response,
+                                              string   $expectedMessage)
     {
         $this->expectException(MaxipagoValidationException::class);
         $this->expectExceptionCode($response->getStatusCode());
-        $this->expectExceptionMessage('description');
+        $this->expectExceptionMessage($expectedMessage);
 
         list($client) = FakeHttpHelper::createClient($response);
 
@@ -109,16 +110,24 @@ class ApiTest extends TestCase
     {
         return [
             'errorCode (string)' => [
-                new Response(200, body: '{"errorCode":"1","errorMsg":"description"}')
+                new Response(200, body: '{"errorCode":"1","errorMsg":"description"}'),
+                'description'
             ],
             'errorCode (int) inside header' => [
-                new Response(200, body: '{"header":{"errorCode":1,"errorMsg":"description"}}')
+                new Response(200, body: '{"header":{"errorCode":1,"errorMsg":"description"}}'),
+                'description'
             ],
             'responseCode (string)' => [
-                new Response(200, body: '{"responseCode":"1","responseMessage":"description"}')
+                new Response(200, body: '{"responseCode":"1","responseMessage":"description"}'),
+                'description'
             ],
             'responseCode (int) with errorMessage' => [
-                new Response(200, body: '{"responseCode":1,"errorMessage":"description"}')
+                new Response(200, body: '{"responseCode":1,"errorMessage":"description"}'),
+                'description'
+            ],
+            'responseCode (int) with responseMessage and errorMessage' => [
+                new Response(200, body: '{"responseCode":1,"responseMessage":"description1","errorMessage":"description2"}'),
+                'description1 (description2)'
             ]
         ];
     }
