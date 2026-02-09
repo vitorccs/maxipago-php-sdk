@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Vitorccs\Maxipago\Constants\Config;
 use Vitorccs\Maxipago\Enums\ResponseCode;
+use Vitorccs\Maxipago\Exceptions\MaxipagoInvalidBodyException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoRequestException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoValidationException;
 
@@ -93,6 +94,7 @@ class Api
         $this->checkErrorCode($response, $body);
         $this->checkResponseCode($response, $body);
         $this->checkForRequestException($response, $body);
+        $this->checkForInvalidXml($response, $body);
     }
 
     /**
@@ -194,5 +196,22 @@ class Api
         if ($statusClass !== 4 && $statusClass !== 5) return;
 
         throw new MaxipagoRequestException($reason, $httpCode, $body);
+    }
+
+    /**
+     * Generic Client or Server errors
+     *
+     * @throws MaxipagoInvalidBodyException
+     */
+    private function checkForInvalidXml(ResponseInterface $response,
+                                        ?object           $body): void
+    {
+        if (!empty($body)) return;
+
+        $httpCode = $response->getStatusCode();
+        $response->getBody()->rewind();
+        $contents = trim($response->getBody()->getContents());
+
+        throw new MaxipagoInvalidBodyException($contents, $httpCode);
     }
 }

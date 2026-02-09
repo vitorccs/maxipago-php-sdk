@@ -3,6 +3,7 @@
 namespace Vitorccs\Maxipago\Converters;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Vitorccs\Maxipago\Helpers\ArrayHelper;
 use Vitorccs\Maxipago\Interfaces\XmlConverter;
 
@@ -21,7 +22,13 @@ class SymfonyXmlConverter implements XmlConverter
 
     public function decodeArray(string $content): ?array
     {
-        $decoded = $this->encoder->decode($content, XmlEncoder::FORMAT);
+        try {
+            $decoded = $this->encoder->decode($content, XmlEncoder::FORMAT);
+        } catch (NotEncodableValueException $e) {
+            // prevent XML errors from stoping the execution
+            $decoded = [];
+        }
+
         $failed = !is_array($decoded) || empty($decoded);
 
         return $failed ? null : $decoded;
