@@ -11,7 +11,8 @@ class XmlResponseMiddlewareTest extends TestCase
 {
     use FakeRequestTrait;
 
-    #[DataProvider('authMiddlewareProvider')]
+    #[DataProvider('validResponse')]
+    #[DataProvider('invalidResponse')]
     public function test_create(Response $response,
                                 string   $expectedJson)
     {
@@ -21,12 +22,30 @@ class XmlResponseMiddlewareTest extends TestCase
         $this->assertSame($expectedJson, $responseBody);
     }
 
-    public static function authMiddlewareProvider(): array
+    public static function validResponse(): array
     {
         return [
             'with root node' => [
                 new Response(200, body: '<root><empty></empty><integer>1</integer><string>text</string><array>a</array><array>b</array></root>'),
                 '{"empty":"","integer":"1","string":"text","array":["a","b"]}'
+            ]
+        ];
+    }
+
+    public static function invalidResponse(): array
+    {
+        return [
+            'empty body' => [
+                new Response(200, body: ''),
+                'null'
+            ],
+            'plain text' => [
+                new Response(200, body: 'content as plain text'),
+                'null'
+            ],
+            'malformed xml' => [
+                new Response(200, body: '<root><empty>malformed XML</root>'),
+                'null'
             ]
         ];
     }

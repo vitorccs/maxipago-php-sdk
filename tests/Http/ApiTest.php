@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Vitorccs\Maxipago\Constants\Config;
+use Vitorccs\Maxipago\Exceptions\MaxipagoInvalidBodyException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoRequestException;
 use Vitorccs\Maxipago\Exceptions\MaxipagoValidationException;
 use Vitorccs\Maxipago\Http\Api;
@@ -42,14 +43,17 @@ class ApiTest extends TestCase
     }
 
     #[DataProvider('invalidResponseBodyProvider')]
-    public function test_invalid_response_body(Response $response)
+    public function test_invalid_response_body(Response $response,
+                                               string   $rawBody)
     {
+        $this->expectException(MaxipagoInvalidBodyException::class);
+        $this->expectExceptionCode($response->getStatusCode());
+        $this->expectExceptionMessageMatches("/{$rawBody}/");
+
         list($client) = FakeHttpHelper::createClient($response);
 
         $api = new Api($client, '');
-        $responseData = $api->postRequest('', []);
-
-        $this->assertNull($responseData);
+        $api->postRequest('', []);
     }
 
     #[DataProvider('validationExceptionProvider')]
@@ -96,12 +100,15 @@ class ApiTest extends TestCase
         return [
             'invalid body' => [
                 new Response(200, body: 'cannot_json_decode'),
+                'cannot_json_decode'
             ],
             'empty body' => [
                 new Response(200, body: ''),
+                'body is empty'
             ],
             'null body' => [
                 new Response(200, body: null),
+                'body is empty'
             ]
         ];
     }

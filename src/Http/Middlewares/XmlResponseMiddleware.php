@@ -29,8 +29,6 @@ class XmlResponseMiddleware
                         $body->rewind();
                         $xmlContent = $body->getContents();
 
-                        if (empty($xmlContent)) return $response;
-
                         $arrayContent = $converter->decodeArray($xmlContent);
                         $jsonContent = json_encode($arrayContent);
 

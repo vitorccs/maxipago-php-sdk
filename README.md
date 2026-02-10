@@ -242,6 +242,8 @@ Esta biblioteca lança as exceções abaixo:
 **Principais:**
 * `MaxipagoValidationException` para erros diversos detectados pela API Maxipago, inclusive erros que impediram a Transação de ser criada (`errorCode` diferente de 0). 
 * `MaxipagoRequestException` para as demais falhas não tratadas pela API, incluindo erros de servidor (HTTP 4xx ou 5xx) e de conexão (ex: timeout).
+* `MaxipagoInvalidBodyException` quando a requisição possui status de sucesso (HTTP 2xx) mas o corpo da resposta da API não contém um XML válido (ex: corpo vazio, XML com erro, texto puro, etc.). 
+Ela herda a classe `MaxipagoRequestException` pois é igualmente um erro não tratado, e pode estar relacionado a falhas de infraestrutura.
 
 **No serviço de Criar Transação:**
 * `MaxipagoProcessorException` quando a Transação conseguiu ser criada pela Maxipago, mas há um erro de "processor" (`responseCode` diferente de 0).
