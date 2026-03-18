@@ -21,6 +21,7 @@ class AbstractDataTest extends TestCase
                                 ?string  $phone,
                                 ?Address $address,
                                 ?string  $cpf,
+                                ?string  $cnpj,
                                 ?string  $rg = null)
     {
         $obj = $this->createDataObject($name);
@@ -31,6 +32,7 @@ class AbstractDataTest extends TestCase
         $obj->phone = $phone;
         $obj->address = $address;
         $obj->cpf = $cpf;
+        $obj->cnpj = $cnpj;
         $obj->rg = $rg;
         $export = $obj->export();
 
@@ -47,23 +49,37 @@ class AbstractDataTest extends TestCase
         $this->assertSame($address->state ?? null, $export['state'] ?? null);
         $this->assertSame($address->country ?? null, $export['country'] ?? null);
         $this->assertSame($address->postalCode ?? null, $export['postalcode'] ?? null);
-        $this->assertIsArray($export['documents'] ?? null);
-        $this->assertIsArray($export['documents']['document'] ?? null);
 
-        $cpfDocuments = array_values(array_filter(
-            $export['documents']['document'],
-            fn(array $document) => ($document['documentType'] ?? null) === 'CPF'
-        ));
+        $missingDocuments = is_null($cpf) && is_null($rg);
 
-        $rgDocuments = array_values(array_filter(
-            $export['documents']['document'],
-            fn(array $document) => ($document['documentType'] ?? null) === 'RG'
-        ));
+        if ($missingDocuments) {
+            $this->assertArrayNotHasKey('documents', $export);
+        } else {
+            $this->assertArrayHasKey('documents', $export);
+            $this->assertIsArray($export['documents']);
 
-        $this->assertCount(count($cpfDocuments), $cpfDocuments);
-        $this->assertCount(count($rgDocuments), $rgDocuments);
-        $this->assertSame($cpf, $cpfDocuments[0]['documentValue'] ?? null);
-        $this->assertSame($rg, $rgDocuments[0]['documentValue'] ?? null);
+            $cpfDocuments = array_values(array_filter(
+                $export['documents']['document'],
+                fn(array $document) => ($document['documentType'] ?? null) === 'CPF'
+            ));
+
+            $cnpjDocuments = array_values(array_filter(
+                $export['documents']['document'],
+                fn(array $document) => ($document['documentType'] ?? null) === 'CNPJ'
+            ));
+
+            $rgDocuments = array_values(array_filter(
+                $export['documents']['document'],
+                fn(array $document) => ($document['documentType'] ?? null) === 'RG'
+            ));
+
+            $this->assertCount(count($cpfDocuments), $cpfDocuments);
+            $this->assertCount(count($cnpjDocuments), $cnpjDocuments);
+            $this->assertCount(count($rgDocuments), $rgDocuments);
+            $this->assertSame($cpf, $cpfDocuments[0]['documentValue'] ?? null);
+            $this->assertSame($cnpj, $cnpjDocuments[0]['documentValue'] ?? null);
+            $this->assertSame($rg, $rgDocuments[0]['documentValue'] ?? null);
+        }
     }
 
     public static function dataProvider(): array
@@ -73,6 +89,7 @@ class AbstractDataTest extends TestCase
         return [
             'null values' => [
                 $faker->name(),
+                null,
                 null,
                 null,
                 null,
@@ -100,6 +117,7 @@ class AbstractDataTest extends TestCase
                 ),
                 null,
                 null,
+                null,
             ],
             'non-null values' => [
                 $faker->name(),
@@ -118,6 +136,7 @@ class AbstractDataTest extends TestCase
                     $faker->countryCode()
                 ),
                 $faker->cpf(),
+                $faker->cnpj(),
                 $faker->rg()
             ]
         ];

@@ -84,11 +84,12 @@ abstract class AbstractData implements JsonSerializable
 
         $documentFields = [
             'type' => $this->customerType,
-            'birthDate' => $this->birthdate,
-            'documents' => [
-                'document' => $documents
-            ]
+            'birthDate' => $this->birthdate
         ];
+
+        if (!empty($documents)) {
+            $documentFields['documents']['document'] = $documents;
+        }
 
         $addressFields = $this->address
             ? $this->address->export()
