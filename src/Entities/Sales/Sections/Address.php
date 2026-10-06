@@ -9,7 +9,7 @@ class Address implements JsonSerializable
 {
     use Exportable;
 
-    const DEFAULT_COUNTRY = 'BR';
+    const string DEFAULT_COUNTRY = 'BR';
 
     public string $address;
     public ?string $address2;

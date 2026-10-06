@@ -8,7 +8,7 @@ class BoletoFields
 {
     use Exportable;
 
-    const DEF_FREQUENCY = 'daily';
+    const string DEF_FREQUENCY = 'daily';
 
     public string $date;
     public string $type;

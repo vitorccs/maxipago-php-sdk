@@ -14,7 +14,7 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
 {
     public function __construct(float            $chargeTotal,
                                 string           $referenceNum,
-                                \Datetime|string $expirationDate,
+                                \DateTime|string $expirationDate,
                                 ?int             $number = null)
     {
         $expirationDate = DateHelper::toString($expirationDate);
@@ -32,7 +32,7 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
 
     public static function create(float            $chargeTotal,
                                   string           $referenceNum,
-                                  \Datetime|string $expirationDate,
+                                  \DateTime|string $expirationDate,
                                   ?int             $number = null): self
     {
         return new self(
@@ -44,6 +44,7 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
     }
 
     // force variable cast since PHP does not implement generics
+    #[\Override]
     public function get(): BoletoSale
     {
         return $this->sale;
@@ -52,7 +53,7 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
     /**
      * @throws MaxipagoException
      */
-    public function setCharge(\Datetime|string $date,
+    public function setCharge(\DateTime|string $date,
                               BoletoChargeType $type,
                               float            $value): self
     {
@@ -66,7 +67,7 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
     /**
      * @throws MaxipagoException
      */
-    public function setInterestRate(\Datetime|string $date,
+    public function setInterestRate(\DateTime|string $date,
                                     float            $value): self
     {
         $date = DateHelper::toString($date);
@@ -79,7 +80,7 @@ class BoletoSaleBuilder extends AbstractSaleBuilder
     /**
      * @throws MaxipagoException
      */
-    public function setDiscount(\Datetime|string $date,
+    public function setDiscount(\DateTime|string $date,
                                 float            $value): self
     {
         $date = DateHelper::toString($date);

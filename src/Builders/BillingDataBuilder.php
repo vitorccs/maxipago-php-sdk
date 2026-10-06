@@ -22,6 +22,7 @@ class BillingDataBuilder extends AbstractDataBuilder
         return $this;
     }
 
+    #[\Override]
     public function get(): BillingData
     {
         return $this->data;

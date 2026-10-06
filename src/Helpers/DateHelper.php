@@ -45,10 +45,11 @@ class DateHelper
     private static function validateStringDate(string $date,
                                                string $format): void
     {
-        $regExp = "#^{$format}$#";
-        $regExp = str_replace('d', '\d{1,2}', $regExp);
-        $regExp = str_replace('m', '\d{1,2}', $regExp);
-        $regExp = str_replace('Y', '\d{4}', $regExp);
+        $regExp = '#^' . strtr($format, [
+            'd' => '\d{1,2}',
+            'm' => '\d{1,2}',
+            'Y' => '\d{4}',
+        ]) . '$#';
 
         if (!preg_match($regExp, $date)) {
             throw new MaxipagoException('Invalid date format');

@@ -7,7 +7,7 @@ use Vitorccs\Maxipago\Helpers\CreditCardHelper;
 
 class CreditCardBuilder
 {
-    private CreditCard $customer;
+    private readonly CreditCard $customer;
 
     public function __construct(int        $customerId,
                                 string     $creditCardNumber,
@@ -25,10 +25,10 @@ class CreditCardBuilder
         );
     }
 
-    public static function create(int    $customerId,
-                                  string $creditCardNumber,
-                                  int    $expirationMonth,
-                                  int    $expirationYear): self
+    public static function create(int        $customerId,
+                                  string     $creditCardNumber,
+                                  string|int $expirationMonth,
+                                  int        $expirationYear): self
     {
         return new self(
             $customerId,

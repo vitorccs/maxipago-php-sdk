@@ -3,8 +3,8 @@
 namespace Vitorccs\Maxipago\Http;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Vitorccs\Maxipago\Constants\Config;
 use Vitorccs\Maxipago\Enums\ResponseCode;
@@ -14,17 +14,11 @@ use Vitorccs\Maxipago\Exceptions\MaxipagoValidationException;
 
 class Api
 {
-    private Client $client;
+    const int ERROR_CODE_SUCCESS = 0;
 
-    private string $root;
-
-    const ERROR_CODE_SUCCESS = 0;
-
-    public function __construct(Client $client,
-                                string $root)
+    public function __construct(private readonly Client $client,
+                                private readonly string $root)
     {
-        $this->client = $client;
-        $this->root = $root;
     }
 
     /**
@@ -50,17 +44,13 @@ class Api
      * @throws MaxipagoValidationException
      * @throws MaxipagoRequestException
      */
-    private function request(string $method,
-                             string $endpoint = null,
-                             array  $options = []): ?object
+    private function request(string  $method,
+                             ?string $endpoint = null,
+                             array   $options = []): ?object
     {
         try {
             $response = $this->client->request($method, $endpoint, $options);
-        } catch (RequestException $e) {
-            if (!$e->hasResponse()) {
-                throw new MaxipagoRequestException($e->getMessage());
-            }
-
+        } catch (BadResponseException $e) {
             $response = $e->getResponse();
         } catch (GuzzleException $e) {
             throw new MaxipagoRequestException($e->getMessage());

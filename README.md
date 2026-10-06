@@ -2,7 +2,7 @@
 SDK em PHP para API Maxipago
 
 ## Requisitos
-* PHP >= 8.1
+* PHP >= 8.3
 
 ## Descrição
 SDK em PHP para a [API Maxipago](https://www.maxipago.com/developers/apidocs/).

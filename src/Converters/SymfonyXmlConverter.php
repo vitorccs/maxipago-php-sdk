@@ -13,18 +13,16 @@ use Vitorccs\Maxipago\Interfaces\XmlConverter;
  */
 class SymfonyXmlConverter implements XmlConverter
 {
-    protected XmlEncoder $encoder;
-
-    public function __construct()
+    public function __construct(protected readonly XmlEncoder $encoder = new XmlEncoder())
     {
-        $this->encoder = new XmlEncoder();
     }
 
+    #[\Override]
     public function decodeArray(string $content): ?array
     {
         try {
             $decoded = $this->encoder->decode($content, XmlEncoder::FORMAT);
-        } catch (NotEncodableValueException $e) {
+        } catch (NotEncodableValueException) {
             // prevent XML errors from stoping the execution
             $decoded = [];
         }
@@ -34,6 +32,7 @@ class SymfonyXmlConverter implements XmlConverter
         return $failed ? null : $decoded;
     }
 
+    #[\Override]
     public function decodeObject(string $content): ?object
     {
         $decoded = $this->decodeArray($content);
@@ -51,6 +50,7 @@ class SymfonyXmlConverter implements XmlConverter
      * Maxipago is also unable to decode HTML entities (e.g. "&#xE7;" to "ç")
      * so we have to force them to be wrapped in a CDATA section
      */
+    #[\Override]
     public function encode(array $data, ?string $root = null): string
     {
         $data = ArrayHelper::removeEmpty($data);

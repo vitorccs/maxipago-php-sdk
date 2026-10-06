@@ -104,7 +104,7 @@ class CreditCardBuilderTest extends TestCase
         return [
             'required (add zero padding)' => [
                 $faker->numberBetween(),
-                $faker->creditCardNumber,
+                $faker->creditCardNumber(),
                 5,
                 intval($faker->year('10 years'))
             ]
@@ -118,7 +118,7 @@ class CreditCardBuilderTest extends TestCase
         return [
             'required (no zero padding)' => [
                 $faker->numberBetween(),
-                $faker->creditCardNumber,
+                $faker->creditCardNumber(),
                 10,
                 intval($faker->year('10 years')),
                 $faker->name(),

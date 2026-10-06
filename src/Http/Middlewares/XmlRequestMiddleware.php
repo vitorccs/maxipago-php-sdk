@@ -12,32 +12,30 @@ use Vitorccs\Maxipago\Interfaces\XmlConverter;
  */
 class XmlRequestMiddleware
 {
-    const OPTION_KEY = Config::OPTION_XML_BODY;
+    const string OPTION_KEY = Config::OPTION_XML_BODY;
 
     public static function handle(?XmlConverter $converter = null): \Closure
     {
-        $converter = $converter ?? new SymfonyXmlConverter();
+        $converter ??= new SymfonyXmlConverter();
 
-        return function (callable $handler) use ($converter) {
-            return function (RequestInterface $request, array $options) use ($handler, $converter) {
-                $xmlPayload = $options[self::OPTION_KEY] ?? null;
+        return fn(callable $handler) => function (RequestInterface $request, array $options) use ($handler, $converter) {
+            $xmlPayload = $options[self::OPTION_KEY] ?? null;
 
-                if (!is_array($xmlPayload)) {
-                    return $handler($request, $options);
-                }
-
-                $contents = $converter->encode($xmlPayload);
-
-                $body = $request->getBody();
-                $body->rewind();
-                $body->write($contents);
-                $body->rewind();
-
-                $request->withHeader('Content-Type', Config::HEADER_CONTENT_TYPE)
-                    ->withBody($body);
-
+            if (!is_array($xmlPayload)) {
                 return $handler($request, $options);
-            };
+            }
+
+            $contents = $converter->encode($xmlPayload);
+
+            $body = $request->getBody();
+            $body->rewind();
+            $body->write($contents);
+            $body->rewind();
+
+            $request->withHeader('Content-Type', Config::HEADER_CONTENT_TYPE)
+                ->withBody($body);
+
+            return $handler($request, $options);
         };
     }
 }

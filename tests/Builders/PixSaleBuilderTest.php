@@ -50,8 +50,7 @@ class PixSaleBuilderTest extends TestCase
             'null values' => [
                 $faker->randomFloat(0, 99999),
                 $faker->uuid(),
-                $faker->numberBetween(0, 99999),
-                null
+                $faker->numberBetween(0, 99999)
             ]
         ];
     }
