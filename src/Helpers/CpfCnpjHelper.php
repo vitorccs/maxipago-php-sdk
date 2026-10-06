@@ -14,13 +14,14 @@ class CpfCnpjHelper
      */
     const CNPJ_CHARS_LENGTH = 14;
 
+    /**
+     * Removes any non-alphanumeric char and convert to uppercase
+     */
     public static function unmask(?string $value): ?string
     {
-        $trimmed = trim($value ?? '');
+        $alpha = StringHelper::alphanumericOnly(strtoupper($value ?? ''));
 
-        if (!strlen($trimmed)) return null;
-
-        return preg_replace("/[^0-9]/", '', $trimmed);
+        return strlen($alpha) ? $alpha : null;
     }
 
     public static function isCpf(?string $value): bool

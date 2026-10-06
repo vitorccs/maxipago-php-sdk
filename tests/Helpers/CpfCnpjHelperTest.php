@@ -54,6 +54,22 @@ class CpfCnpjHelperTest extends TestCase
                 '50780904000155',
                 '50780904000155',
             ],
+            'masked alphanumeric cnpj' => [
+                '12.ABC.345/01DE-35',
+                '12ABC34501DE35',
+            ],
+            'unmasked alphanumeric cnpj' => [
+                '12ABC34501DE35',
+                '12ABC34501DE35',
+            ],
+            'lowercase alphanumeric cnpj' => [
+                '12.abc.345/01de-35',
+                '12ABC34501DE35',
+            ],
+            'only mask chars' => [
+                '../-',
+                null
+            ],
             'null value' => [
                 null,
                 null
@@ -109,6 +125,22 @@ class CpfCnpjHelperTest extends TestCase
             'unmasked cnpj' => [
                 '50780904000155',
                 true
+            ],
+            'masked alphanumeric cnpj' => [
+                '12.ABC.345/01DE-35',
+                true
+            ],
+            'unmasked alphanumeric cnpj' => [
+                '12ABC34501DE35',
+                true
+            ],
+            'lowercase alphanumeric cnpj' => [
+                '12.abc.345/01de-35',
+                true
+            ],
+            'alphanumeric invalid length' => [
+                '12ABC34501DE3',
+                false
             ]
         ];
     }
