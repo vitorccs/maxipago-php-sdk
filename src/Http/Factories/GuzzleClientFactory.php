@@ -16,7 +16,7 @@ class GuzzleClientFactory
     /**
      * This project version
      */
-    const string SDK_VERSION = '1.0.0';
+    const string SDK_VERSION = '1.5.0';
 
     /**
      * The API Sandbox Base URL

@@ -3,8 +3,8 @@
 namespace Vitorccs\Maxipago\Http;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Vitorccs\Maxipago\Constants\Config;
 use Vitorccs\Maxipago\Enums\ResponseCode;
@@ -50,11 +50,7 @@ class Api
     {
         try {
             $response = $this->client->request($method, $endpoint, $options);
-        } catch (RequestException $e) {
-            if (!$e->hasResponse()) {
-                throw new MaxipagoRequestException($e->getMessage());
-            }
-
+        } catch (BadResponseException $e) {
             $response = $e->getResponse();
         } catch (GuzzleException $e) {
             throw new MaxipagoRequestException($e->getMessage());
