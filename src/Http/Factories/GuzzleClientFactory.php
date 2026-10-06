@@ -16,21 +16,21 @@ class GuzzleClientFactory
     /**
      * This project version
      */
-    const SDK_VERSION = '1.0.0';
+    const string SDK_VERSION = '1.0.0';
 
     /**
      * The API Sandbox Base URL
      */
-    const SANDBOX_URL = 'https://testapi.maxipago.net';
+    const string SANDBOX_URL = 'https://testapi.maxipago.net';
 
     /**
      * The API Production Base URL
      */
-    const PRODUCTION_URL = 'https://api.maxipago.net';
+    const string PRODUCTION_URL = 'https://api.maxipago.net';
 
     public static function create(?Parameters $parameters = null): Client
     {
-        $parameters = $parameters ?: new Parameters();
+        $parameters ??= new Parameters();
 
         $handlerStack = new HandlerStack();
         $handlerStack->setHandler(new CurlHandler());

@@ -9,13 +9,12 @@ class Payment implements JsonSerializable
 {
     use Exportable;
 
-    public float $chargeTotal;
+    public function __construct(public float $chargeTotal)
+    {
+    }
+
+    // declared after the constructor to preserve the XML node order (see Exportable)
     public ?float $shippingTotal = null;
     public ?string $currencyCode = null;
     public ?string $softDescriptor = null;
-
-    public function __construct(float $chargeTotal)
-    {
-        $this->chargeTotal = $chargeTotal;
-    }
 }

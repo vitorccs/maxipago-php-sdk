@@ -23,6 +23,5 @@ class CreditCard implements JsonSerializable
                                 public string $expirationMonth,
                                 public int    $expirationYear)
     {
-
     }
 }

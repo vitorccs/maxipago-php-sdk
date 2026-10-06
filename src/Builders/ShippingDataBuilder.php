@@ -16,6 +16,7 @@ class ShippingDataBuilder extends AbstractDataBuilder
         return new self($name);
     }
 
+    #[\Override]
     public function get(): ShippingData
     {
         return $this->data;

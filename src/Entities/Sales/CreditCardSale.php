@@ -20,6 +20,7 @@ class CreditCardSale extends AbstractSale
     }
 
     // force variable cast since PHP does not implement generics
+    #[\Override]
     public function getPayType(): OnFilePayType|CreditCardPayType
     {
         return $this->payType;

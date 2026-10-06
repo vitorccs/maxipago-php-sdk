@@ -19,6 +19,7 @@ class PixSale extends AbstractSale
     }
 
     // force variable cast since PHP does not implement generics
+    #[\Override]
     public function getPayType(): PixPayType
     {
         return $this->payType;

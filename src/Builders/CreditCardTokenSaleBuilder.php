@@ -38,6 +38,7 @@ class CreditCardTokenSaleBuilder extends AbstractSaleBuilder
     }
 
     // force variable cast since PHP does not implement generics
+    #[\Override]
     public function get(): CreditCardSale
     {
         return $this->sale;

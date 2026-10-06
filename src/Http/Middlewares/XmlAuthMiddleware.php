@@ -18,26 +18,24 @@ class XmlAuthMiddleware
 {
     public static function handle(Parameters $parameters): \Closure
     {
-        return function (callable $handler) use ($parameters) {
-            return function (RequestInterface $request, array $options) use ($handler, $parameters) {
-                $body = $request->getBody();
-                $body->rewind();
-                $contents = $body->getContents();
-                $xml = simplexml_load_string($contents);
+        return fn(callable $handler) => function (RequestInterface $request, array $options) use ($handler, $parameters) {
+            $body = $request->getBody();
+            $body->rewind();
+            $contents = $body->getContents();
+            $xml = simplexml_load_string($contents);
 
-                $child = $xml->addChild('verification');
-                $child->addChild('merchantId', $parameters->getMerchantId());
-                $child->addChild('merchantKey', $parameters->getMerchantKey());
-                $contents = $xml->asXML();
+            $child = $xml->addChild('verification');
+            $child->addChild('merchantId', $parameters->getMerchantId());
+            $child->addChild('merchantKey', $parameters->getMerchantKey());
+            $contents = $xml->asXML();
 
-                $body->rewind();
-                $body->write($contents);
-                $body->rewind();
+            $body->rewind();
+            $body->write($contents);
+            $body->rewind();
 
-                $request->withBody($body);
+            $request->withBody($body);
 
-                return $handler($request, $options);
-            };
+            return $handler($request, $options);
         };
     }
 }

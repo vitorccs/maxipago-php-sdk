@@ -10,7 +10,7 @@ use Vitorccs\Maxipago\Helpers\DateHelper;
 
 class CustomerBuilder
 {
-    private Customer $customer;
+    private readonly Customer $customer;
 
     public function __construct(string $customerIdExt,
                                 string $firstName,
@@ -52,7 +52,7 @@ class CustomerBuilder
     /**
      * @throws MaxipagoException
      */
-    public function setBirthDate(\Datetime|string|null $date): self
+    public function setBirthDate(\DateTime|string|null $date): self
     {
         $this->customer->dob = DateHelper::toLocalString($date);
         return $this;

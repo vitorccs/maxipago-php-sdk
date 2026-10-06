@@ -4,16 +4,12 @@ namespace Vitorccs\Maxipago\Exceptions;
 
 class MaxipagoException extends \Exception
 {
-    private ?object $responseBody;
-
-    public function __construct(string  $message = null,
-                                int     $httpCode = 0,
-                                ?object $responseBody = null)
+    public function __construct(?string                  $message = null,
+                                int                      $httpCode = 0,
+                                private readonly ?object $responseBody = null)
     {
         $message = trim($message ?: 'Undefined error');
         parent::__construct($message, $httpCode);
-
-        $this->responseBody = $responseBody;
     }
 
     public function getResponseBody(): ?object

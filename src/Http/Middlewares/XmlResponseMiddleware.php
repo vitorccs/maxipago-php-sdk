@@ -14,29 +14,27 @@ use Vitorccs\Maxipago\Interfaces\XmlConverter;
  */
 class XmlResponseMiddleware
 {
-    const HEADER_CONTENT_TYPE = 'application/json';
+    const string HEADER_CONTENT_TYPE = 'application/json';
 
     public static function handle(?XmlConverter $converter = null): \Closure
     {
-        $converter = $converter ?? new SymfonyXmlConverter();
+        $converter ??= new SymfonyXmlConverter();
 
-        return function (callable $handler) use ($converter) {
-            return function (RequestInterface $request, array $options) use ($handler, $converter) {
-                $promise = $handler($request, $options);
-                return $promise->then(
-                    function (ResponseInterface $response) use ($converter) {
-                        $body = $response->getBody();
-                        $body->rewind();
-                        $xmlContent = $body->getContents();
+        return fn(callable $handler) => function (RequestInterface $request, array $options) use ($handler, $converter) {
+            $promise = $handler($request, $options);
+            return $promise->then(
+                function (ResponseInterface $response) use ($converter) {
+                    $body = $response->getBody();
+                    $body->rewind();
+                    $xmlContent = $body->getContents();
 
-                        $arrayContent = $converter->decodeArray($xmlContent);
-                        $jsonContent = json_encode($arrayContent);
+                    $arrayContent = $converter->decodeArray($xmlContent);
+                    $jsonContent = json_encode($arrayContent);
 
-                        return $response->withHeader('Content-Type', self::HEADER_CONTENT_TYPE)
-                            ->withBody(Utils::streamFor($jsonContent));
-                    }
-                );
-            };
+                    return $response->withHeader('Content-Type', self::HEADER_CONTENT_TYPE)
+                        ->withBody(Utils::streamFor($jsonContent));
+                }
+            );
         };
     }
 }

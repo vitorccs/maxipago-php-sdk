@@ -12,11 +12,8 @@ use Vitorccs\Maxipago\Helpers\DateHelper;
 
 abstract class AbstractDataBuilder
 {
-    protected AbstractData $data;
-
-    public function __construct(AbstractData $data)
+    public function __construct(protected readonly AbstractData $data)
     {
-        $this->data = $data;
     }
 
     public function get(): AbstractData

@@ -9,32 +9,32 @@ class Parameters
     /**
      * The ENV name for Merchant ID
      */
-    const MAXIPAGO_MERCHANT_ID = 'MAXIPAGO_MERCHANT_ID';
+    const string MAXIPAGO_MERCHANT_ID = 'MAXIPAGO_MERCHANT_ID';
 
     /**
      * The ENV name for Merchant Key
      */
-    const MAXIPAGO_MERCHANT_KEY = 'MAXIPAGO_MERCHANT_KEY';
+    const string MAXIPAGO_MERCHANT_KEY = 'MAXIPAGO_MERCHANT_KEY';
 
     /**
      * The ENV name for toggling Sandbox mode
      */
-    const MAXIPAGO_SANDBOX = 'MAXIPAGO_SANDBOX';
+    const string MAXIPAGO_SANDBOX = 'MAXIPAGO_SANDBOX';
 
     /**
      * The ENV name for HTTP Timeout parameter
      */
-    const MAXIPAGO_TIMEOUT = 'MAXIPAGO_TIMEOUT';
+    const string MAXIPAGO_TIMEOUT = 'MAXIPAGO_TIMEOUT';
 
     /**
      * The default API timeout
      */
-    const DEFAULT_TIMEOUT = 30;
+    const int DEFAULT_TIMEOUT = 30;
 
     /**
      * The default API mode
      */
-    const DEFAULT_SANDBOX = false;
+    const bool DEFAULT_SANDBOX = false;
 
     /**
      * The Merchant ID
@@ -143,7 +143,7 @@ class Parameters
     /**
      * @throws MaxipagoParameterException
      */
-    public function setTimeout(int $timeout = null): void
+    public function setTimeout(?int $timeout = null): void
     {
         $envValue = getenv(static::MAXIPAGO_TIMEOUT);
 

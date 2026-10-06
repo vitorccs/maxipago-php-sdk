@@ -4,19 +4,13 @@ namespace Vitorccs\Maxipago\Exceptions;
 
 class MaxipagoProcessorException extends MaxipagoException
 {
-    private ?string $processorCode;
-    private ?string $responseCode;
-
-    public function __construct(?string $message = null,
-                                ?string $processorCode = null,
-                                ?string $responseCode = null,
-                                int     $httpCode = 0,
-                                ?object $responseBody = null)
+    public function __construct(?string                  $message = null,
+                                private readonly ?string $processorCode = null,
+                                private readonly ?string $responseCode = null,
+                                int                      $httpCode = 0,
+                                ?object                  $responseBody = null)
     {
         parent::__construct($message, $httpCode, $responseBody);
-
-        $this->responseCode = $responseCode;
-        $this->processorCode = $processorCode;
     }
 
     public function getResponseCode(): ?string

@@ -2,6 +2,11 @@
 
 namespace Vitorccs\Maxipago\Entities;
 
+/**
+ * Note: properties are exported in their declaration order, which also
+ * defines the XML node order. Promoted properties are declared at the
+ * constructor position within the class body.
+ */
 trait Exportable
 {
     public function nonExportableFields(): array
@@ -25,11 +30,7 @@ trait Exportable
         $properties = get_object_vars($this);
 
         // remove non-exportable fields
-        $properties = array_filter(
-            $properties,
-            fn(mixed $value, string $key) => !in_array($key, $this->nonExportableFields()),
-            ARRAY_FILTER_USE_BOTH
-        );
+        $properties = array_diff_key($properties, array_flip($this->nonExportableFields()));
 
         // add additional array fields
         return array_merge($properties, $this->addExportableFields());

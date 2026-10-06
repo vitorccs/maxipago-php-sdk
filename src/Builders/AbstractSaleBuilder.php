@@ -14,14 +14,9 @@ use Vitorccs\Maxipago\Enums\Processor;
 
 abstract class AbstractSaleBuilder
 {
-    protected AbstractSale $sale;
-    protected AbstractPayType $payType;
-
-    public function __construct(AbstractSale    $sale,
-                                AbstractPayType $payType)
+    public function __construct(protected readonly AbstractSale    $sale,
+                                protected readonly AbstractPayType $payType)
     {
-        $this->sale = $sale;
-        $this->payType = $payType;
     }
 
     public function get(): AbstractSale

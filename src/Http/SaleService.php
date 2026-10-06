@@ -25,19 +25,12 @@ class SaleService extends Resource
     public function createSale(AbstractSale $sale,
                                bool         $checkSuccess = false): object
     {
-        if ($sale instanceof BoletoSale) {
-            return $this->createBoletoSale($sale, $checkSuccess);
-        }
-
-        if ($sale instanceof CreditCardSale) {
-            return $this->createCreditCardSale($sale, $checkSuccess);
-        }
-
-        if ($sale instanceof PixSale) {
-            return $this->createPixSale($sale, $checkSuccess);
-        }
-
-        throw new MaxipagoException('Cannot detect instance of Sale');
+        return match (true) {
+            $sale instanceof BoletoSale => $this->createBoletoSale($sale, $checkSuccess),
+            $sale instanceof CreditCardSale => $this->createCreditCardSale($sale, $checkSuccess),
+            $sale instanceof PixSale => $this->createPixSale($sale, $checkSuccess),
+            default => throw new MaxipagoException('Cannot detect instance of Sale')
+        };
     }
 
     /**

@@ -4,8 +4,8 @@ namespace Vitorccs\Maxipago\Entities\PayTypes;
 
 class BoletoPayType extends AbstractPayType
 {
-    const DEFAULT_FORMAT = 'pdf';
-    const DEFAULT_FIN_DOC_TYPE = 'DM';
+    const string DEFAULT_FORMAT = 'pdf';
+    const string DEFAULT_FIN_DOC_TYPE = 'DM';
 
     public ?BoletoFields $charge;
     public ?BoletoFields $interestRate;
@@ -35,6 +35,7 @@ class BoletoPayType extends AbstractPayType
         $this->instructions = $instructions;
     }
 
+    #[\Override]
     public function nodeName(): string
     {
         return 'boleto';

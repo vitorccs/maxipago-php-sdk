@@ -7,12 +7,12 @@ class CpfCnpjHelper
     /**
      * The CPF chars length
      */
-    const CPF_LENGTH = 11;
+    const int CPF_LENGTH = 11;
 
     /**
      * The CNPJ chars length
      */
-    const CNPJ_CHARS_LENGTH = 14;
+    const int CNPJ_CHARS_LENGTH = 14;
 
     /**
      * Removes any non-alphanumeric char and convert to uppercase

@@ -4,16 +4,12 @@ namespace Vitorccs\Maxipago\Entities\PayTypes;
 
 class PixPayType extends AbstractPayType
 {
-    public int $expirationTime;
-    public ?string $paymentInfo = null;
-
-    public function __construct(int     $expirationTime,
-                                ?string $paymentInfo = null)
+    public function __construct(public int     $expirationTime,
+                                public ?string $paymentInfo = null)
     {
-        $this->expirationTime = $expirationTime;
-        $this->paymentInfo = $paymentInfo;
     }
 
+    #[\Override]
     public function nodeName(): string
     {
         return 'pix';

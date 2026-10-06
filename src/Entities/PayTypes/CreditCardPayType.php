@@ -2,13 +2,10 @@
 
 namespace Vitorccs\Maxipago\Entities\PayTypes;
 
-use Vitorccs\Maxipago\Entities\Exportable;
 use Vitorccs\Maxipago\Helpers\CreditCardHelper;
 
 class CreditCardPayType extends AbstractPayType
 {
-    use Exportable;
-
     public string $number;
     public string $expMonth;
     public string $expYear;
@@ -23,6 +20,7 @@ class CreditCardPayType extends AbstractPayType
         $this->expYear = (string)$expYear;
     }
 
+    #[\Override]
     public function nodeName(): string
     {
         return 'creditCard';

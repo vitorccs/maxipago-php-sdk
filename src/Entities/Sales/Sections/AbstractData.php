@@ -9,7 +9,11 @@ abstract class AbstractData implements JsonSerializable
 {
     use Exportable;
 
-    public string $name;
+    public function __construct(public string $name)
+    {
+    }
+
+    // declared after the constructor to preserve the XML node order (see Exportable)
     public ?string $birthdate = null;
     public ?string $customerType = null;
     public ?string $email = null;
@@ -19,11 +23,6 @@ abstract class AbstractData implements JsonSerializable
     public ?string $cpf = null;
     public ?string $rg = null;
     public ?string $cnpj = null;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
 
     public function setAddressFields(string  $address,
                                      ?string $address2,

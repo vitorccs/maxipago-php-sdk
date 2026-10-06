@@ -14,17 +14,11 @@ use Vitorccs\Maxipago\Exceptions\MaxipagoValidationException;
 
 class Api
 {
-    private Client $client;
+    const int ERROR_CODE_SUCCESS = 0;
 
-    private string $root;
-
-    const ERROR_CODE_SUCCESS = 0;
-
-    public function __construct(Client $client,
-                                string $root)
+    public function __construct(private readonly Client $client,
+                                private readonly string $root)
     {
-        $this->client = $client;
-        $this->root = $root;
     }
 
     /**
@@ -50,9 +44,9 @@ class Api
      * @throws MaxipagoValidationException
      * @throws MaxipagoRequestException
      */
-    private function request(string $method,
-                             string $endpoint = null,
-                             array  $options = []): ?object
+    private function request(string  $method,
+                             ?string $endpoint = null,
+                             array   $options = []): ?object
     {
         try {
             $response = $this->client->request($method, $endpoint, $options);
