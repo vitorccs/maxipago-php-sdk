@@ -4,8 +4,8 @@ namespace Vitorccs\Maxipago\Entities;
 
 /**
  * Note: properties are exported in their declaration order, which also
- * defines the XML node order. Promoted properties are declared at the
- * constructor position within the class body.
+ * defines the XML node order. Avoid constructor property promotion, as
+ * promoted properties are declared at the constructor position.
  */
 trait Exportable
 {

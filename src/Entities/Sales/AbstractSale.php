@@ -13,19 +13,24 @@ abstract class AbstractSale implements JsonSerializable
 {
     use Exportable;
 
-    public function __construct(protected AbstractPayType $payType,
-                                public Payment            $payment,
-                                public string             $referenceNum)
-    {
-    }
-
-    // declared after the constructor to preserve the XML node order (see Exportable)
+    protected AbstractPayType $payType;
+    public Payment $payment;
+    public string $referenceNum;
     public ?int $processorId = null;
     public ?BillingData $billing = null;
     public ?string $ipAddress = null;
     public ?string $fraudCheck = null;
     public ?string $customerIdExt = null;
     public ?ShippingData $shipping = null;
+
+    public function __construct(AbstractPayType $payType,
+                                Payment         $payment,
+                                string          $referenceNum)
+    {
+        $this->payType = $payType;
+        $this->payment = $payment;
+        $this->referenceNum = $referenceNum;
+    }
 
     public function getPayType(): AbstractPayType
     {

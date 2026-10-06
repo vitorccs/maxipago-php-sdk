@@ -9,13 +9,9 @@ class Customer implements JsonSerializable
 {
     use Exportable;
 
-    public function __construct(public string $customerIdExt,
-                                public string $firstName,
-                                public string $lastName)
-    {
-    }
-
-    // declared after the constructor to preserve the XML node order (see Exportable)
+    public string $customerIdExt;
+    public string $firstName;
+    public string $lastName;
     public ?int $customerId = null;
     public ?string $phone = null;
     public ?string $email = null;
@@ -23,6 +19,15 @@ class Customer implements JsonSerializable
     public ?string $ssn = null;
     public ?string $sex = null;
     public ?Address $address = null;
+
+    public function __construct(string $customerIdExt,
+                                string $firstName,
+                                string $lastName)
+    {
+        $this->customerIdExt = $customerIdExt;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+    }
 
     public function nonExportableFields(): array
     {
